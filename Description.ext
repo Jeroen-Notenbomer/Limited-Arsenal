@@ -1,0 +1,5 @@
+
+allowFunctionsRecompile = 1;
+class CfgFunctions {
+	#include "JeroenArsenal\functions.hpp"
+};
