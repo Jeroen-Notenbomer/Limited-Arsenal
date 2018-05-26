@@ -2,12 +2,12 @@
 #include "\A3\Ui_f\hpp\defineResinclDesign.inc"
 
 //items that need to be removed from arsenal
-_arrayPlaced = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
-_arrayTaken = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
-_arrayMissing = [];
-_arrayReplaced = [];
+private _arrayPlaced = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+private _arrayTaken = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+private _arrayMissing = [];
+private _arrayReplaced = [];
 
-_addToArray = {
+private  _addToArray = {
 	private ["_array","_index","_item","_amount"];
 	_array = _this select 0;
 	_index = _this select 1;
@@ -19,7 +19,8 @@ _addToArray = {
 	};
 };
 
-_removeFromArray = {
+
+private _removeFromArray = {
 	private ["_array","_index","_item","_amount"];
 	_array = _this select 0;
 	_index = _this select 1;
@@ -31,7 +32,7 @@ _removeFromArray = {
 	};
 };
 
-_addArrays = {
+private _addArrays = {
 	_array1 = +(_this select 0);
 	_array2 = +(_this select 1);
 	{
@@ -45,7 +46,7 @@ _addArrays = {
 	_array1;
 };
 
-_subtractArrays = {
+private _subtractArrays = {
 	_array1 = +(_this select 0);
 	_array2 = +(_this select 1);
 	{
@@ -60,13 +61,13 @@ _subtractArrays = {
 };
 
 //name that needed to be loaded
-_saveName = _this;
+private _saveName = _this;
 private _object = UINamespace getVariable "jn_object";
 private _dataList = _object getVariable "jna_dataList";
 
 
-_saveData = profilenamespace getvariable ["bis_fnc_saveInventory_data",[]];
-_inventory = [];
+private _saveData = profilenamespace getvariable ["bis_fnc_saveInventory_data",[]];
+private _inventory = [];
 {
 	if(typename _x  == "STRING" && {_x == _saveName})exitWith{
 		_inventory = _saveData select (_foreachindex + 1);
@@ -84,73 +85,74 @@ _inventory = [];
 
 	//["30Rnd_65x39_caseless_green",30,false,-1,"Uniform"]
 
-	_loaded = _x select 2;
+	private _loaded = _x select 2;
 	if(_loaded)then{
-		_item = _x select 0;
-		_amount = _x select 1;
-		_index = _item call jn_fnc_arsenal_itemType;
+		private _item = _x select 0;
+		private _amount = _x select 1;
+		private _index = _item call jn_fnc_arsenal_itemType;
 		//no need to remove because uniform, vest and backpack get replaced.
 		[_arrayPlaced,_index,_item,_amount]call _addToArray;
 	};
 }foreach magazinesAmmoFull player;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// assinged items
-_assignedItems_old = assignedItems player + [headgear player] + [goggles player] + [hmd player] + [binocular player];
+private _assignedItems_old = assignedItems player + [headgear player] + [goggles player];
 {
-	_item = _x;
-	_amount = 1;
-	_index = _item call jn_fnc_arsenal_itemType;
+	private _item = _x;
+	private _amount = 1;
+	private _index = _item call jn_fnc_arsenal_itemType;
 	player unlinkItem _item;
-
 	[_arrayPlaced,_index,_item,_amount]call _addToArray;
 } forEach _assignedItems_old - [""];
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  weapon attachments
-_attachments = primaryWeaponItems player + secondaryWeaponItems player + handgunItems player;
+private _attachments = primaryWeaponItems player + secondaryWeaponItems player + handgunItems player;
 {
-	_item = _x;
-	_amount = 1;
-	_index = _item call jn_fnc_arsenal_itemType;
+	private _item = _x;
+	private _amount = 1;
+	private _index = _item call jn_fnc_arsenal_itemType;
 	[_arrayPlaced,_index,_item,_amount]call _addToArray;
 } forEach _attachments;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	weapons
-_weapons = [primaryWeapon player, secondaryWeapon player, handgunWeapon player];
+private _weapons_old = [primaryWeapon player, secondaryWeapon player, handgunWeapon player];
 {
-	_item = _x;
-	_amount = 1;
-	_index = _foreachindex;
+	private _item = _x;
+	private _amount = 1;
+	private _index = _foreachindex;
 	player removeWeapon _item;
 	[_arrayPlaced,_index,_item,_amount]call _addToArray;
-} forEach _weapons;
+} forEach _weapons_old;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	uniform backpack vest (inc itmes)
-_uniform_old = uniform player;
-_vest_old = vest player;
-_backpack_old = backpack player;
+private _uniform_old = uniform player;
+private _vest_old = vest player;
+private _backpack_old = backpack player;
 
 //remove items from containers
 {
-	_array = (_x call jn_fnc_arsenal_cargoToArray);
+	private _array = (_x call jn_fnc_arsenal_cargoToArray);
 	//remove because they where already added
 	_arrayPlaced = [_arrayPlaced, _array] call _addArrays;
 } forEach [uniformContainer player, vestContainer player, backpackContainer player];
 
 //remove containers
-removeuniform player;
+removeUniform player;
 [_arrayPlaced,IDC_RSCDISPLAYARSENAL_TAB_UNIFORM,_uniform_old,1]call _addToArray;
-removevest player;
+removeVest player;
 [_arrayPlaced,IDC_RSCDISPLAYARSENAL_TAB_VEST,_vest_old,1]call _addToArray;
-removebackpack player;
+removeBackpack player;
 [_arrayPlaced,IDC_RSCDISPLAYARSENAL_TAB_BACKPACK,_backpack_old,1]call _addToArray;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  ADD
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-_isMember = true;//todo add member only stuff
-_availableItems = [_dataList, _arrayPlaced] call _addArrays;
+private _availableItems = [_dataList, _arrayPlaced] call _addArrays;
 
+//TODO add member only stuff
+/*
+private _isMember = true;
 {
 	_index = _foreachindex;
 	_subArray = _x;
@@ -164,13 +166,14 @@ _availableItems = [_dataList, _arrayPlaced] call _addArrays;
 	} forEach _subArray;
 	_availableItems set [_index, _subArray];
 } forEach _availableItems;
+*/
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  assinged items
-_assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inventory select 4] + [_inventory select 5]);					//todo add binocular batteries dont work yet
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  assigned items
+private _assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inventory select 4] + [_inventory select 5]);					//TODO add binocular batteries dont work yet
 {
-	_item = _x;
-	_amount = 1;
-	_index = _item call jn_fnc_arsenal_itemType;
+	private _item = _x;
+	private _amount = 1;
+	private _index = _item call jn_fnc_arsenal_itemType;
 
 	if(_index == -1) then {
 		_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_arsenal_addToArray;
@@ -199,21 +202,19 @@ _assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inventory se
 } forEach _assignedItems - [""];
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// weapons and attachments
-removebackpack player;
+removeBackpack player;
 player addBackpack "B_Carryall_oli"; //add ammo to gun, can only be done by first adding a mag.
-_weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
+private _weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
 {
-	private ["_item"];
-	_item = _x select 0;
+	private _item = _x select 0;
 
 	if!(_item isEqualTo "")then{
-		private ["_itemAttachmets","_itemMag","_amount","_amountMag","_index","_indexMag"];
-		_itemAttachmets = _x select 1;
-		_itemMag = _x select 2;
-		_amount = 1;
-		_amountMag = getNumber (configfile >> "CfgMagazines" >> _itemMag >> "count");
-		_index = _foreachindex;
-		_indexMag = IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL;
+		private _itemAttachmets = _x select 1;
+		private _itemMag = _x select 2;
+		private _amount = 1;
+		private _amountMag = getNumber (configfile >> "CfgMagazines" >> _itemMag >> "count");
+		private _index = _foreachindex;
+		private _indexMag = IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL;
 
 		//add ammo to backpack, which need to be loaded in the gun.
 		call {
@@ -221,7 +222,7 @@ _weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
 				player addMagazine [_itemMag, _amountMag];
 			};
 
-			_amountMagAvailable = [_availableItems select _indexMag, _itemMag] call jn_fnc_arsenal_itemCount;
+			private _amountMagAvailable = [_availableItems select _indexMag, _itemMag] call jn_fnc_arsenal_itemCount;
 			if (_amountMagAvailable > 0) then {
 				if (_amountMagAvailable < _amountMag) then {
 					_arrayMissing = [_arrayMissing,[_itemMag,_amountMag]] call jn_fnc_arsenal_addToArray;
@@ -252,11 +253,10 @@ _weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
 
 		//add attachments
 		{
-			_itemAcc = _x;
+			private _itemAcc = _x;
 			if!(_itemAcc isEqualTo "")then{
-				_amountAcc = 1;
-
-				_indexAcc = _itemAcc call jn_fnc_arsenal_itemType;
+				private _amountAcc = 1;
+				private _indexAcc = _itemAcc call jn_fnc_arsenal_itemType;
 
 				call {
 
@@ -284,28 +284,28 @@ _weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
 		}foreach _itemAttachmets;
 	};
 } forEach _weapons;
-removebackpack player;
+removeBackpack player;//Remove temporary backpack
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  vest, uniform and backpack
-_uniform = _inventory select 0 select 0;
-_vest = _inventory select 1 select 0;
-_backpack = _inventory select 2 select 0;
+private _uniform = _inventory select 0 select 0;
+private _vest = _inventory select 1 select 0;
+private _backpack = _inventory select 2 select 0;
 
-_uniformItems = _inventory select 0 select 1;
-_vestItems = _inventory select 1 select 1;
-_backpackItems = _inventory select 2 select 1;
+private _uniformItems = _inventory select 0 select 1;
+private _vestItems = _inventory select 1 select 1;
+private _backpackItems = _inventory select 2 select 1;
 
 //add containers
-_containers = [_uniform,_vest,_backpack];
+private _containers = [_uniform,_vest,_backpack];
 private _invCallArray = [{removeUniform player;player forceAddUniform _this;},//todo remove function because its done already before
                       {removeVest player;player addVest _this;},
                       {removeBackpackGlobal player;player addBackpack _this;}];
 					  
 {
-	_item = _x;
+	private _item = _x;
 	if!(_item isEqualTo "")then{
-		_amount = 1;
-		_index = [
+		private _amount = 1;
+		private _index = [
 			IDC_RSCDISPLAYARSENAL_TAB_UNIFORM,
 			IDC_RSCDISPLAYARSENAL_TAB_VEST,
 			IDC_RSCDISPLAYARSENAL_TAB_BACKPACK
@@ -321,7 +321,7 @@ private _invCallArray = [{removeUniform player;player forceAddUniform _this;},//
 				[_arrayTaken,_index,_item,_amount] call _addToArray;
 				[_availableItems,_index,_item,_amount] call _removeFromArray;
 			} else {
-				_oldItem = [_uniform_old,_vest_old,_backpack_old] select _foreachindex;
+				private _oldItem = [_uniform_old,_vest_old,_backpack_old] select _foreachindex;
 				if !(_oldItem isEqualTo "") then {
 					_oldItem call (_invCallArray select _foreachindex);
 					_arrayReplaced = [_arrayReplaced,[_item,_oldItem]] call jn_fnc_arsenal_addToArray;
@@ -336,19 +336,20 @@ private _invCallArray = [{removeUniform player;player forceAddUniform _this;},//
 
 //add items to containers
 {
-	_container = call (_x select 0);
-	_items = _x select 1;
+	private _container = call (_x select 0);
+	private _items = _x select 1;
 
 	{
-		_item = _x;
-		_index = _item call jn_fnc_arsenal_itemType;
+		private _item = _x;
+		private _index = _item call jn_fnc_arsenal_itemType;
+
 		if(_index == -1)then{
-			_amount = 1; // we will never know the ammo count in the magazines anymore :c
+			private _amount = 1; // we will never know the ammo count in the magazines anymore :c
 			_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_arsenal_addToArray;
 		} else {
-			_amountAvailable = [_availableItems select _index, _item] call jn_fnc_arsenal_itemCount;
+			private _amountAvailable = [_availableItems select _index, _item] call jn_fnc_arsenal_itemCount;
 			if (_index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL) then {
-				_amount = getNumber (configfile >> "CfgMagazines" >> _item >> "count");
+				private _amount = getNumber (configfile >> "CfgMagazines" >> _item >> "count");
 				call {
 					if ([_itemCounts select _index, _item] call jn_fnc_arsenal_itemCount == -1) exitWith {
 						_container addMagazineAmmoCargo  [_item,1, _amount];
@@ -365,7 +366,7 @@ private _invCallArray = [{removeUniform player;player forceAddUniform _this;},//
 					};
 				};
 			} else {
-				_amount = 1;
+				private _amount = 1;
 				call {
 					if ([_itemCounts select _index, _item] call jn_fnc_arsenal_itemCount == -1) exitWith {
 						_container addItemCargo [_item, 1];
@@ -403,11 +404,11 @@ _arrayRemove = [_arrayTaken, _arrayPlaced] call _subtractArrays;
 //create text for missing and replaced items
 //we could use ingame names here but some items might not be ingame(disabled mod), but if you feel like it you can still add it.
 
-_reportTotal = "";
-_reportReplaced = "";
+private _reportTotal = "";
+private _reportReplaced = "";
 {
-	_nameNew = _x select 0;
-	_nameOld = _x select 1;
+	private _nameNew = _x select 0;
+	private _nameOld = _x select 1;
 	_reportReplaced = _reportReplaced + _nameOld + " instead of " + _nameNew + "\n";
 } forEach _arrayReplaced;
 
@@ -415,10 +416,10 @@ if!(_reportReplaced isEqualTo "")then{
 	_reportTotal = ("I keep this items because i couldn't find the other ones:\n" + _reportReplaced+"\n");
 };
 
-_reportMissing = "";
+private _reportMissing = "";
 {
-	_name = _x select 0;
-	_amount = _x select 1;
+	private _name = _x select 0;
+	private _amount = _x select 1;
 	_reportMissing = _reportMissing + _name + " (" + (str _amount) + "x)\n";
 }forEach _arrayMissing;
 
