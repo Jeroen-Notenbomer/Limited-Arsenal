@@ -1,5 +1,4 @@
-# Limited-Arsenal
-Arma 3
+
 -------------------------ARSENAL-----------------------
 This is the Arsenal system which i wrote for Antistasi.
 Its basicly the default arsenal but all weapons are limited in amount. 
