@@ -19,4 +19,4 @@ with missionNamespace do{
 };
 
 //update all clients that are looking in the garage
-["updateVehicle",[_data,_index]] remoteExecCall ["jn_fnc_garage",server getVariable ["jng_playersInGarage",[]]];
+["updateVehicle",[_data,_index]] remoteExecCall ["jn_fnc_garage",missionnamespace getVariable ["jng_playersInGarage",[]]];

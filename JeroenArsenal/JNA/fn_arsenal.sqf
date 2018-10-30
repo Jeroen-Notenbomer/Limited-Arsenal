@@ -15,7 +15,7 @@
 /*
     selecting a weapon makes selectItem fire 2x
 */
-#include "script_component.hpp"
+
 #include "\A3\ui_f\hpp\defineDIKCodes.inc"
 #include "\A3\Ui_f\hpp\defineResinclDesign.inc"
 
@@ -124,7 +124,7 @@ _this = [_this,1,[]] call bis_fnc_param;
 
 
 if!(_mode in ["draw3D","KeyDown","ListCurSel"])then{
-    diag_log format["mode: %1 %2", _mode, _this];
+    diag_log format["JNA mode: %1 %2", _mode, _this];
 };
 
 switch _mode do {
@@ -254,7 +254,7 @@ switch _mode do {
 
         _ctrlButtonExport = _display displayctrl IDC_RSCDISPLAYARSENAL_CONTROLSBAR_BUTTONEXPORT;
         _ctrlButtonExport ctrlRemoveAllEventHandlers "buttonclick";
-        _ctrlButtonExport ctrlSetText "TODO";
+        _ctrlButtonExport ctrlSetText "";//TODO add some function maybe?
 
         _ctrlButtonImport = _display displayctrl IDC_RSCDISPLAYARSENAL_CONTROLSBAR_BUTTONIMPORT;
         _ctrlButtonImport ctrlRemoveAllEventHandlers "buttonclick";
@@ -269,7 +269,7 @@ switch _mode do {
         _ctrlButtonRandom = _display displayctrl IDC_RSCDISPLAYARSENAL_CONTROLSBAR_BUTTONRANDOM;
         _ctrlButtonRandom ctrlRemoveAllEventHandlers "buttonclick";
         _ctrlButtonRandom ctrladdeventhandler ["buttonclick",{["buttonInvToJNA",[ctrlparent (_this select 0)]] call jn_fnc_arsenal;}];
-        _ctrlButtonRandom ctrlSetText "To crate";
+        _ctrlButtonRandom ctrlSetText "Inv. to Arsenal";
         _ctrlButtonRandom ctrlSetTooltip "Move items from crate inventory to arsenal";
 
         _ctrlArrowLeft = _display displayctrl IDC_RSCDISPLAYARSENAL_ARROWLEFT;
@@ -380,7 +380,7 @@ switch _mode do {
                         if ( isClass (configFile >> "CFGweapons" >> _itemname)) then {
                             _item set [0,(_itemname call bis_fnc_baseWeapon)];
                         };
-                    }
+                    };
                 };
             }foreach _x;
         }foreach [_uniformitems,_vestitems,_backpackitems]; //loop items in backpack
@@ -662,7 +662,7 @@ switch _mode do {
                         {
                             if(_x in _itemsUnique)then{
                                 ["UpdateItemAdd",[_index,_x,0]] call jn_fnc_arsenal;
-                            }
+                            };
                         } forEach (getarray (configfile >> "cfgweapons" >> _x >> "magazines"));
                     }forEach [primaryweapon player, secondaryweapon player, handgunweapon player];
                 }else{
@@ -753,7 +753,7 @@ switch _mode do {
                             _amountX = if(_idc == IDC_RSCDISPLAYARSENAL_TAB_CARGOMISC)then{1}else{_x select 1};
                             if(_itemX == _item)then{
                                 _amount = _amount + _amountX;
-                            }
+                            };
                         } forEach _items;
 
                         _ctrlList lnbsettext [[_l,2],str (_amount)];
@@ -1065,7 +1065,7 @@ switch _mode do {
                     }else{
                         _amount = _amountCurrent - _amount;
                         if(_amount<0)then{_amount = 0;};
-                    }
+                    };
                 };
 
                 if(_amount <= 0 && {
@@ -1073,7 +1073,7 @@ switch _mode do {
                         (parseNumber (_ctrlList lnbText [_l,2]) == 0);
                     }else{
                         (_l != _cursel);
-                    }
+                    };
                 })then{
                     if(_type)then{_ctrlList lnbDeleteRow _l;}else{_ctrlList lbDelete _l;};
                     if(_cursel > _l)then{
@@ -1148,7 +1148,7 @@ switch _mode do {
                     default {""};
                 };
                 _compatibleItems = _weapon call bis_fnc_compatibleItems;
-                if not (({_x == _item} count _compatibleItems > 0) || _item isequalto "")exitwith{
+                if not (({_x == _item} count _compatibleItems > 0) || (_item isequalto ""))exitwith{
                     _ctrlList lbSetColor [_lbAdd, [1,1,1,0.25]];
                 };
             };
@@ -1246,7 +1246,7 @@ switch _mode do {
             ])then{
                 //check how many useable mags there are
                 _ammoTotal = 0;
-                //_compatableMagazines = server getVariable [format ["%1_mags", _item],[]];//TODO marker for changed entry
+                //_compatableMagazines = missionnamespace getVariable [format ["%1_mags", _item],[]];//TODO marker for changed entry
                 scopeName "updateWeapon";//TODO marker for changed entry
                 _compatableMagazines = (getarray (configfile >> "cfgweapons" >> _item >> "magazines"));//TODO marker for changed entry
                 {
@@ -1257,7 +1257,7 @@ switch _mode do {
                     if (_magName in _compatableMagazines) then {
                         if (_amount == -1) then {_ammoTotal = -1; breakTo "updateWeapon"};//TODO marker for changed entry
                         _ammoTotal = _ammoTotal + _amount;
-                    }
+                    };
                 } forEach (_dataList select IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL);
 
                 //change color;
@@ -1734,7 +1734,7 @@ switch _mode do {
 
                 //prevent selecting grey items, needs to be this complicated because bis_fnc_compatibleItems returns some crap resolts like optic_aco instead of Optic_Aco
                 _compatibleItems = _weapon call bis_fnc_compatibleItems;
-                if not (({_x == _item} count _compatibleItems > 0) || _item isequalto "")exitwith{
+                if not (({_x == _item} count _compatibleItems > 0) || (_item isequalto ""))exitwith{
                     ['TabSelectRight',[_display,_index]] call jn_fnc_arsenal;
                 };
 

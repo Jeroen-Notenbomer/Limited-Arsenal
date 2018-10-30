@@ -74,7 +74,7 @@ private _inventory = [];
 	};
 } forEach _saveData;
 
-
+//[["U_B_CombatUniform_mcam",["FirstAidKit","30Rnd_65x39_caseless_mag","30Rnd_65x39_caseless_mag","Chemlight_green"]],["V_BandollierB_rgr",["30Rnd_65x39_caseless_mag","11Rnd_45ACP_Mag","11Rnd_45ACP_Mag","SmokeShell","SmokeShellGreen","Chemlight_green"]],["",[]],"H_MilCap_mcamo","","Binocular",["arifle_MXC_F",["","","optic_Aco",""],"30Rnd_65x39_caseless_mag"],["",["","","",""],""],["hgun_Pistol_heavy_01_F",["","","optic_MRD",""],"11Rnd_45ACP_Mag"],["ItemMap","ItemCompass","ItemWatch","ItemRadio","ItemGPS"],["WhiteHead_20","male07eng",""]]
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// REMOVE
@@ -96,7 +96,7 @@ private _inventory = [];
 }foreach magazinesAmmoFull player;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// assinged items
-private _assignedItems_old = assignedItems player + [headgear player] + [goggles player];
+private _assignedItems_old = assignedItems player - [binocular player] + [headgear player] + [goggles player]; //we ignore binocular here, because its a weapon
 {
 	private _item = _x;
 	private _amount = 1;
@@ -115,7 +115,7 @@ private _attachments = primaryWeaponItems player + secondaryWeaponItems player +
 } forEach _attachments;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	weapons
-private _weapons_old = [primaryWeapon player, secondaryWeapon player, handgunWeapon player];
+private _weapons_old = [primaryWeapon player, secondaryWeapon player, handgunWeapon player, binocular player];
 {
 	private _item = _x;
 	private _amount = 1;
@@ -169,8 +169,8 @@ private _isMember = true;
 */
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  assigned items
-private _assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inventory select 4] + [_inventory select 5]);					//TODO add binocular batteries dont work yet
-{
+private _assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inventory select 4]+ [_inventory select 5]);	    	//TODO add binocular batteries dont work yet
+{// forEach _assignedItems - [""];
 	private _item = _x;
 	private _amount = 1;
 	private _index = _item call jn_fnc_arsenal_itemType;
@@ -180,17 +180,25 @@ private _assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inve
 	} else {
 
 		//TFAR fix
-		private _radioName = getText(configfile >> "CfgWeapons" >> _item >> "tf_parent");
+		private   = getText(configfile >> "CfgWeapons" >> _item >> "tf_parent");
 		if!(_radioName isEqualTo "")then{
 			_item =_radioName;
 		};
 
 		call {
 			if ([_itemCounts select _index, _item] call jn_fnc_arsenal_itemCount == -1) exitWith {
-				player linkItem _item;
+				if(_item isEqualTo (_inventory select 5) )then{
+					player addweapon _item;
+				else{
+					player linkItem _item;
+				};
 			};
 			if ([_availableItems select _index, _item] call jn_fnc_arsenal_itemCount > 0) then {
-				player linkItem _item;
+				if(_item isEqualTo (_inventory select 5) )then{
+					player addweapon _item;
+				else{
+					player linkItem _item;
+				};
 				[_arrayTaken,_index,_item,_amount]call _addToArray;
 				[_availableItems,_index,_item,_amount]call _removeFromArray;
 			} else {
@@ -205,7 +213,7 @@ private _assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inve
 removeBackpack player;
 player addBackpack "B_Carryall_oli"; //add ammo to gun, can only be done by first adding a mag.
 private _weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
-{
+{//forEach _weapons;
 	private _item = _x select 0;
 
 	if!(_item isEqualTo "")then{

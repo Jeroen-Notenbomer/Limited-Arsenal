@@ -1,6 +1,19 @@
-diag_log "Init JNG: Start";
+/*
+	Author: Jeroen Notenbomer
 
-//object to add garage to
+	Description:
+	Adds garage to a given object
+
+	Parameter(s):
+	Object
+
+	Returns:
+	
+	Usage: object call jn_fnc_garage_init;
+	
+*/
+
+diag_log "Init JNG: Start";
 params [["_object",objNull,[objNull]]];
 
 //check if it was already initialised
@@ -30,7 +43,17 @@ if(hasInterface)then{
     _object addaction [
         localize"STR_JNG_ACT_OPEN",
         {
-            //["jn_fnc_garage"] call bis_fnc_startloadingscreen;
+			["jn_fnc_garage", "Loading Nutz™ Garage"] call bis_fnc_startloadingscreen;
+			[] spawn {
+				uisleep 5;
+				private _ids = missionnamespace getvariable ["BIS_fnc_startLoadingScreen_ids",[]];
+				if("jn_fnc_garage" in _ids)then{
+					private _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
+					titleText["ERROR DURING LOADING GARAGE", "PLAIN"];
+					_display closedisplay 2;
+					["jn_fnc_garage"] call BIS_fnc_endLoadingScreen;
+				};
+			};
             UINamespace setVariable ["jn_type","garage"];
             [clientOwner] remoteExecCall ["jn_fnc_garage_requestOpen",2];
         },

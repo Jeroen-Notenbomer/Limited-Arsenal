@@ -25,7 +25,7 @@
 	<Package name="Garage">
 		<Container name="Actions">
 			<Key ID="STR_JNG_ACT_OPEN">
-				<Original>Garage</Original>Original>
+				<Original>Garage</Original>
 			</Key>
 		</Container>
 	</Package>

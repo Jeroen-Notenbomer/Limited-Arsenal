@@ -13,7 +13,7 @@ private _vehicleList = (jng_vehicleList select _index);
 } forEach _vehicleList;
 
 //update all clients that are looking in the garage
-private _clients = server getVariable ["jng_playersInGarage",[]];
+private _clients = missionnamespace getVariable ["jng_playersInGarage",[]];
 if!(_clients isEqualTo [])then{
 	["removeVehicle",[_data,_index]] remoteExecCall ["jn_fnc_garage",_clients];
 };

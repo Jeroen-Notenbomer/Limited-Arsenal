@@ -15,9 +15,9 @@
 if(!isServer)exitWith{};
 params ["_clientOwner"];
 
-_temp = server getVariable ["jng_playersInGarage",[]];
+_temp = missionnamespace getVariable ["jng_playersInGarage",[]];
 _temp pushBackUnique _clientOwner;
-server setVariable ["jng_playersInGarage",_temp,true];
+missionnamespace setVariable ["jng_playersInGarage",_temp,true];
 
 call compile preProcessFileLineNumbers "JeroenArsenal\JNG\recompile.sqf";
 

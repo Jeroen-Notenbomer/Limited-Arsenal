@@ -1,3 +1,18 @@
+/*
+	Author: Jeroen Notenbomer
+
+	Description:
+	Adds vehicle to garage with checking distance
+
+	Parameter(s):
+	Object
+
+	Returns:
+	
+	Usage: object call jn_fnc_garage_garageVehicle;
+	
+*/
+
 #include "defineCommon.inc"
 
 params [ ["_vehicle",objNull,[objNull]] ];

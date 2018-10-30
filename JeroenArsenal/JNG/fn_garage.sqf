@@ -1,11 +1,26 @@
-#include "script_component.hpp"
+/*
+	Author: Jeroen Notenbomer
+
+	Description:
+	Core code
+
+	Parameter(s):
+	Object
+
+	Returns:
+	
+	Usage: No use for end user
+	
+*/
 #include "defineCommon.inc"
 
 disableserialization;
 
 _mode = [_this,0,"Open",[displaynull,""]] call bis_fnc_param;
 _this = [_this,1,[]] call bis_fnc_param;
-if!(_mode in ["draw3D","addVehicle"])then{TRACE_1("JNG",_mode);};
+if!(_mode in ["draw3D","addVehicle"])then{
+    diag_log format["JNG mode: %1 %2", _mode, _this];
+};
 
 switch _mode do {
 
@@ -55,15 +70,15 @@ switch _mode do {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "MouseZChanged": {
 
-		_cam = (uinamespace getvariable ["BIS_fnc_arsenal_cam",objnull]);
-		_center = (missionnamespace getvariable ["JNG_CENTER",objnull]);
-		_target = (missionnamespace getvariable ["BIS_fnc_arsenal_target",objnull]);
-		_camPos = (uinamespace getvariable ["BIS_fnc_arsenal_campos",objnull]); //[5,-180.171,31.4394,[-0.151687,-0.000455028,0.169312]]
+		private _cam = (uinamespace getvariable ["BIS_fnc_arsenal_cam",objnull]);
+		private _center = (missionnamespace getvariable ["JNG_CENTER",objnull]);
+		private _target = (missionnamespace getvariable ["BIS_fnc_arsenal_target",objnull]);
+		private _camPos = (uinamespace getvariable ["BIS_fnc_arsenal_campos",objnull]); //[5,-180.171,31.4394,[-0.151687,-0.000455028,0.169312]]
 
-		_disMax = ((boundingboxreal _center select 0) vectordistance (boundingboxreal _center select 1)) * 1.5;
-		_disMin = _disMax * 0.15;
-		_z = _this select 1;
-		_dis = _camPos select 0;
+		private _disMax = ((boundingboxreal _center select 0) vectordistance (boundingboxreal _center select 1)) * 1.5;
+		private _disMin = _disMax * 0.15;
+		private _z = _this select 1;
+		private _dis = _camPos select 0;
 		_dis = _dis - (_z / 10);
 		_dis = _dis max _disMin min _disMax;
 		_camPos set [0,_dis];
@@ -72,7 +87,7 @@ switch _mode do {
 	/////////////////////////////////////////////////////////////////////////////////////////// Externaly called
 	case "CustomInit":{
 		_display = _this select 0;
-
+		
 		["CustomEvents",[_display]] call  jn_fnc_garage;
 		["CustomLayout",[_display]] call  jn_fnc_garage;
 		["CreateListsLeft",[_display]] call  jn_fnc_garage;
@@ -95,6 +110,7 @@ switch _mode do {
 
 		//how current resources
 		//["ShowStats",[_display]] call jn_fnc_garage;
+		
 		["jn_fnc_garage"] call bis_fnc_endLoadingScreen;
 	};
 
@@ -340,7 +356,6 @@ switch _mode do {
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "CreateListsLeft":{
-	    TRACE_1("CreateListsLeft", _this);
 		_display =  _this select 0;
 
 		//loop all vehicle types
@@ -367,7 +382,6 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// GLOBAL
 	case "addVehicle":{
-	    TRACE_1("addVehicle", _this);
 		_data =  _this select 0;
 		_index = _this select 1;
 
@@ -391,7 +405,6 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// GLOBAL
 	case "updateVehicle":{
-        TRACE_1("updateVehicle", _this);
 		_dataNew =  _this select 0;
 		_index = _this select 1;
 		_display =  uiNamespace getVariable ["arsanalDisplay","No display"];
@@ -416,7 +429,6 @@ switch _mode do {
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "UpdateItemColor":{
-        TRACE_1("UpdateItemColor", _this);
 		params["_display","_index","_l"];
 		private _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
 		private _dataStr = _ctrlList lbdata _l;
@@ -455,7 +467,6 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// GLOBAL
 	case "updateVehicleSingleData":{
-        TRACE_1("updateVehicleSingleData", _this);
 		params ["_nameUpdate", "_index", "_beingChangedUpdate", "_lockedUpdate", "_lockedNameUpdate"];
 		_display =  uiNamespace getVariable ["arsanalDisplay","No display"];
 
@@ -1187,7 +1198,6 @@ switch _mode do {
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "Preview":{
-	    TRACE_1("Preview", _this);
 		if!(isnil "jna_preview_This")exitWith{};//inpatient person spamming the button
 		_display = _this select 0;
 		_data = _this select 1;
@@ -1682,8 +1692,8 @@ switch _mode do {
 		private _center = objnull;
 		if(_local)then{
 			_center = _type createVehiclelocal _pos;
-			_center enablesimulation false; //Stef, testing to avoid explosions
-			_center allowDamage false;
+			_center enablesimulation false;
+			_center allowDamage true;
 		}else{
 			_center = _type createVehicle _pos;
 		};
@@ -1752,8 +1762,10 @@ switch _mode do {
 		};
 
 		//Load fuel and fuelcargo by Stef
-		_center	setfuel _fuel;
-		if(activeACE) then {[_center, _fuelcargo] call ace_refuel_fnc_setFuel;} else {_center setfuelcargo _fuelcargo};
+		private _maxFuel = getNumber (configfile >> "CfgVehicles" >> _type >> "fuelCapacity");
+		_center	setfuel (_fuel/_maxFuel);
+		
+		//TODO if(activeACE) then {[_center, _fuelcargo] call ace_refuel_fnc_setFuel;} else {_center setfuelcargo _fuelcargo};
 
 
 		_center//return

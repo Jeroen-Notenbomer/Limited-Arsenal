@@ -107,9 +107,13 @@ private _attachItem = [];
 	};
 } forEach attachedObjects _vehicle;
 
-//fuel stef
-private _fuel = fuel _vehicle;
-private _fuelcargo = if(getfuelcargo _vehicle >=0) then {getfuelcargo _vehicle} else {[_vehicle] call ace_refuel_fnc_getFuel;};
+//fuel
+private _maxFuel = getNumber (configfile >> "CfgVehicles" >> _type >> "fuelCapacity");
+private _fuel = _maxFuel * fuel _vehicle;
+
+//TODO cargo fuels for ace
+private _fuelcargo = 0;
+//if(getfuelcargo _vehicle >=0) then {getfuelcargo _vehicle} else {0};
 
 //set defaults
 private _beingChanged = "";

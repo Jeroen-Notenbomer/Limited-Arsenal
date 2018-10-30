@@ -1,15 +1,33 @@
+/*
+	Author: Jeroen Notenbomer
+
+	Description:
+	Adds arsenal to a given object if run on client.
+	Initilizes server
+	
+	Parameter(s):
+	Object
+
+	Returns:
+	
+	Usage: object call jn_fnc_arsenal_init;
+	
+*/
+
+
 #include "\A3\ui_f\hpp\defineDIKCodes.inc"
 #include "\A3\Ui_f\hpp\defineResinclDesign.inc"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-diag_log "Init JNA: Start";
+
 
 params [["_object",objNull,[objNull]]];
+diag_log ("Init JNA: Start " + str _object);
 if(isNull _object)exitWith{["Error: wrong input given '%1'",_object] call BIS_fnc_error;};
 
 //check if it was already initialised
-if(_object getVariable ["jna_init",false])exitWith{diag_log "Init JNA: Already initialised";};
+if(_object getVariable ["jna_init",false])exitWith{diag_log ("Init JNA: Already initialised " + str _object) };
 _object setVariable ["jna_init", true];
 
 //change this for items that members can only take
@@ -21,10 +39,10 @@ jna_minItemMember = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
 
 //server
 if(isServer)then{
-	diag_log "Init JNA: server";
+	diag_log ("Init JNA: server " + str _object);
 
     //load default if it was not loaded from savegame
-    _datalist = _object getVariable "jna_dataList";
+    private _datalist = _object getVariable "jna_dataList";
     if(isnil "_datalist")then{
         _object setVariable ["jna_dataList" ,[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]];
     };
@@ -34,17 +52,26 @@ if(isServer)then{
 
 //player
 if(hasInterface)then{
-    diag_log "Init JNA: player";
+    diag_log ("Init JNA: player "+ str _object);
 
     //add arsenal button
     _object addaction [
         format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNA_ACT_OPEN"],
         {
-            _object = _this select 0;
+            private _object = _this select 0;
 
             //start loading screen
-            //["jn_fnc_arsenal"] call bis_fnc_startloadingscreen;
-
+			["jn_fnc_arsenal", "Loading Nutz™ Arsenal"] call bis_fnc_startloadingscreen;
+			[] spawn {
+				uisleep 5;
+				private _ids = missionnamespace getvariable ["BIS_fnc_startLoadingScreen_ids",[]];
+				if("jn_fnc_arsenal" in _ids)then{
+					private _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
+					titleText["ERROR DURING LOADING ARSENAL", "PLAIN"];
+					_display closedisplay 2;
+					["jn_fnc_arsenal"] call BIS_fnc_endLoadingScreen;
+				};
+			};
             //save proper ammo because BIS arsenal rearms it, and I will over write it back again
             missionNamespace setVariable ["jna_magazines_init",  [
                 magazinesAmmoCargo (uniformContainer player),
@@ -53,21 +80,21 @@ if(hasInterface)then{
             ]];
 
             //Save attachments in containers, because BIS arsenal removes them
-            _attachmentsContainers = [[],[],[]];
+            private _attachmentsContainers = [[],[],[]];
             {
-                _container = _x;
-                _weaponAtt = weaponsItemsCargo _x;
-                _attachments = [];
+                private _container = _x;
+                private _weaponAtt = weaponsItemsCargo _x;
+                private _attachments = [];
 
                 if!(isNil "_weaponAtt")then{
 
                     {
-                        _atts = [_x select 1,_x select 2,_x select 3,_x select 5];
+                        private _atts = [_x select 1,_x select 2,_x select 3,_x select 5];
                         _atts = _atts - [""];
                         _attachments = _attachments + _atts;
                     } forEach _weaponAtt;
                     _attachmentsContainers set [_foreachindex,_attachments];
-                }
+                };
             } forEach [uniformContainer player,vestContainer player,backpackContainer player];
             missionNamespace setVariable ["jna_containerCargo_init", _attachmentsContainers];
 
@@ -86,11 +113,11 @@ if(hasInterface)then{
         "alive _target && {_target distance _this < 5}"
     ];
 
-    //add vehicle/box filler button
+    //add vehicle/box filling button
     _object addaction [
         format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNA_ACT_CONTAINER_OPEN"],
         {
-            _object = _this select 0;
+            private _object = _this select 0;
 
             //remove old action to not get dubble, but be able to change the main arsenal box
             player removeAction (uiNamespace getVariable ["JN_CONTAINER_OPEN_ACTION",-1]);
@@ -100,13 +127,22 @@ if(hasInterface)then{
             _id = player addaction [
                 format ["<t color='#FF0000'><img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNA_ACT_CONTAINER_SELECT"],
                 {
-                    _object = _this select 3 select 0;
+                    private _object = _this select 3 select 0;
 
-                    _id = _this select 2;
+                    private _id = _this select 2;
                     player removeAction _id;
 
-                    //start loading screen
-                    //["jn_fnc_arsenal"] call bis_fnc_startloadingscreen;
+					["jn_fnc_arsenal", "Loading Nutz™ Arsenal"] call bis_fnc_startloadingscreen;
+					[] spawn {
+						uisleep 5;
+						private _ids = missionnamespace getvariable ["BIS_fnc_startLoadingScreen_ids",[]];
+						if("jn_fnc_arsenal" in _ids)then{
+							private _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
+							titleText["ERROR DURING LOADING ARSENAL", "PLAIN"];
+							_display closedisplay 2;
+							["jn_fnc_arsenal"] call BIS_fnc_endLoadingScreen;
+						};
+					};
 
                     //check if player is looking at some object
                     _object_selected = cursorObject;
@@ -193,7 +229,9 @@ if(hasInterface)then{
                 _type = UINamespace getVariable ["jn_type",""];
                 if(_type isEqualTo "arsenal")then{
                     ["CustomInit", [uiNamespace getVariable "arsanalDisplay"]] call jn_fnc_arsenal;
-                }else{
+                };
+				
+				if(_type isEqualTo "container")then{
                     ["CustomInit", [uiNamespace getVariable "arsanalDisplay"]] call jn_fnc_arsenal_container;
                 };
 
@@ -219,4 +257,4 @@ if(hasInterface)then{
 
 
 missionNamespace setVariable ["jna_first_init",false];
-diag_log "Init JNA: done";
+diag_log ("Init JNA: done " + str _object);
