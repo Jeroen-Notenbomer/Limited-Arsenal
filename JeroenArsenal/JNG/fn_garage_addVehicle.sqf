@@ -2,11 +2,13 @@ if(!isserver)exitWith{};
 
 _data = _this select 0;
 _index = _this select 1;
+_object = _this select 2;
 
 _name = _data select 0;
 
 with missionNamespace do{
-	_array = jng_vehicleList select _index;
+	private _jng_vehicleList = _object getVariable "jng_vehicleList";
+	_array = _jng_vehicleList select _index;
 
 	_nr = 1;
 	_newName = (_name + " nr:"+ str _nr);
@@ -34,7 +36,9 @@ with missionNamespace do{
 	_data set [0, _newName];
 
 	_array pushback _data;
-	jng_vehicleList set [_index,_array];
+	_jng_vehicleList set [_index,_array];
+	diag_log str [_object,"jng_vehicleList"];
+	_object setVariable ["jng_vehicleList",_jng_vehicleList];
 };
 
 //update all clients that are looking in the garage

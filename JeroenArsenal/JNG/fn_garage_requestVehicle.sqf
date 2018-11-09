@@ -1,12 +1,11 @@
-//#define DEBUG_SYNCHRONOUS
-//#define DEBUG_MODE_FULL
 
 if(!isserver)exitWith{};
 
-params["_name","_index","_namePlayer","_uid","_id"];
+params["_name","_index","_namePlayer","_uid","_id","_object"];
 
 with missionNamespace do{
-	_array = jng_vehicleList select _index;
+	private _jng_vehicleList = _object getVariable "jng_vehicleList";
+	private _array = _jng_vehicleList select _index;
 
 	private _activePlayers = [];
 	{
@@ -26,12 +25,12 @@ with missionNamespace do{
 					//update datalist
 					_data set [1,_namePlayer];
 					_array set [_foreachindex,_data];
-					jng_vehicleList set [_index,_array];
+					_jng_vehicleList set [_index,_array];
 					//update all clients that are looking in the garage
 					["updateVehicleSingleData",[_name,_index,_namePlayer,nil]] remoteExecCall ["jn_fnc_garage",missionnamespace getVariable ["jng_playersInGarage",[]]];
 				};
 			};
-			//tell client he can take vehicle
+			//tell client he can or cant take vehicle
 			[_message] remoteExecCall ["jn_fnc_garage_requestVehicleMessage",[_id]];
 		};
 	} forEach _array;

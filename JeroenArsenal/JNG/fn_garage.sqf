@@ -9,7 +9,7 @@
 
 	Returns:
 	
-	Usage: No use for end user
+	Usage: No use for end user, use  garage_init instead
 	
 */
 #include "defineCommon.inc"
@@ -18,7 +18,7 @@ disableserialization;
 
 _mode = [_this,0,"Open",[displaynull,""]] call bis_fnc_param;
 _this = [_this,1,[]] call bis_fnc_param;
-if!(_mode in ["draw3D","addVehicle"])then{
+if!(_mode in ["draw3D","addVehicle","KeyDown"])then{
     diag_log format["JNG mode: %1 %2", _mode, _this];
 };
 
@@ -109,7 +109,7 @@ switch _mode do {
 		["showMessage",[_display,"Jeroen (Not) Limited Garage"]] call jn_fnc_arsenal;
 
 		//how current resources
-		//["ShowStats",[_display]] call jn_fnc_garage;
+		["ShowStats",[_display]] call jn_fnc_garage;
 		
 		["jn_fnc_garage"] call bis_fnc_endLoadingScreen;
 	};
@@ -343,10 +343,9 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// Externaly called
 	case "Open":{
-		jng_vehicleList = _this select 0;
-        jng_ammoList = _this select 1;
-		private _object = missionnamespace getVariable ["jng_object",objNull];
-		["Open",[nil,_object,player,false]] call bis_fnc_arsenal;
+		diag_log "JNG open arsenal(yes we open bis arsenal not garage)";
+		private _object = UINamespace getVariable "jn_object";
+        ["Open",[nil,_object,player,false]] call bis_fnc_arsenal;
 	};
 
 
@@ -357,7 +356,9 @@ switch _mode do {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "CreateListsLeft":{
 		_display =  _this select 0;
-
+        private _object = UINamespace getVariable "jn_object";
+        private _jng_vehicleList = _object getVariable "jng_vehicleList";
+		
 		//loop all vehicle types
 		{
 			_vehicleList = _x;
@@ -377,7 +378,7 @@ switch _mode do {
 			//Deselect
 			_ctrlList lbSetCurSel -1;
 
-		} forEach jng_vehicleList;
+		} forEach _jng_vehicleList;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////////// GLOBAL
@@ -528,10 +529,14 @@ switch _mode do {
 		private _display = _this select 0;
 		private _ctrlList = _this select 1;
 		private _index = _this select 2;
-
+		
+		private _center = missionnamespace getvariable "JNG_CENTER";
+		private _indexLeft = _center call jn_fnc_garage_getVehicleIndex;
+		private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft); 
 
 
 		private _cursel = lbcursel _ctrlList;
+		private _curselLeft = lbcursel _ctrlListLeft;
 		private _type = (ctrltype _ctrlList == 102);
 		private _center = (missionnamespace getvariable ["JNG_CENTER",player]);
 		private _checkboxTextures = [
@@ -539,9 +544,7 @@ switch _mode do {
 			tolower gettext (configfile >> "RscCheckBox" >> "textureChecked")
 		];
 
-
 		private _dataStr = if _type then{_ctrlList lnbData [_cursel,0]}else{_ctrlList lbdata _cursel};
-		DECOMPILE_DATA
 
 		private _initVehicle = false;
 		switch _index do {
@@ -551,12 +554,14 @@ switch _mode do {
 			case IDC_JNG_TAB_PLANE;
 			case IDC_JNG_TAB_NAVAL;
 			case IDC_JNG_TAB_STATIC: {
+				DECOMPILE_DATA
 				["Preview", [_display,_data,_index]] call jn_fnc_garage;
 			};
 			case IDC_JNG_TAB_REPAIR: {
 
 			};
 			case IDC_JNG_TAB_HARDPOINT: {
+				DECOMPILE_DATA
 				_nodeID = _data select 0;
 
 				//remove old static
@@ -590,8 +595,7 @@ switch _mode do {
 				private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft);
 
 				//load vehicle
-				private _cursel = lbCurSel _ctrlListLeft;
-				private _datastr = _ctrlListLeft lbdata _cursel;
+				private _datastr = _ctrlListLeft lbdata _curselLeft;
 				DECOMPILE_DATA
 				SPLIT_SAVE
 
@@ -600,24 +604,27 @@ switch _mode do {
 				COMPILE_SAVE
 
 				//save vehicle
-				_ctrlListLeft lbsetdata [_cursel,_datastr];
+				_ctrlListLeft lbsetdata [_curselLeft,_datastr];
 
 			};
 			case IDC_JNG_TAB_PYLON: {
+				DECOMPILE_DATA
 				private _item = _data select 0;
 				private _idPylon = _data select 1;
 
+				
 				//get selected ctrl on the left
 				private _index = _center call jn_fnc_garage_getVehicleIndex;
 				private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
-
+				
 				//load vehicle data
-				private _datastr = _ctrlListLeft lnbdata [_cursel,0];
+				private _datastr = _ctrlListLeft lbdata _curselLeft;
 				DECOMPILE_DATA
 				SPLIT_SAVE
 
 
 				_cfg = (configfile >> "cfgMagazines" >> _item);
+				
 				_maxAmmo = getNumber(_cfg >> "count");
 
 				//update
@@ -634,7 +641,7 @@ switch _mode do {
 
 				//save data
 				COMPILE_SAVE
-				_ctrlList lbsetdata [_cursel,_datastr];
+				_ctrlListLeft lbsetdata [_curselLeft,_datastr];
 
 			};
 			case IDC_JNG_TAB_REARM: {
@@ -1011,36 +1018,36 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
 	case "SelectRepairIcon":{
-		_display = _this select 0;
-		_damageID = _this select 1;
-		_ctrlIcon = _this select 2;
+		params["_display","_ctrlIcon","_damageID","_costNodeW"];
+		
+		private _center = missionnamespace getvariable "JNG_CENTER";
+		private _indexLeft = _center call jn_fnc_garage_getVehicleIndex;
+		private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft); 
+		private _object = UINamespace getVariable "jn_object";
+		
+		private _repairPoints = _object getVariable ["jng_repairPoints",0];
+		private _amount = _repairPoints - _costNodeW;
+		if(_amount < 0)exitwith{['showMessage',[_display,"To less repair points"]] call jn_fnc_arsenal;};//messsage not enough points TODO
+		
+		_object setVariable ["jng_repairPoints",_amount, true];
+		[_object,_amount, STATTYPE_REPAIR] remoteExecCall ["jn_fnc_garage_updatePoints",2];
+		
+		//load
+		private _cursel = lbCurSel _ctrlListLeft;
+		private _datastr = _ctrlListLeft lbdata _cursel;
+		DECOMPILE_DATA
+		SPLIT_SAVE
 
+		//update
+		_damage set [_damageID, 0];
+		_center setHitIndex [_damageID,0];
+		_ctrlIcon ctrlEnable false;
+		_ctrlIcon ctrlShow false;
 
-		_center = JNG_CENTER;
+		//save
+		COMPILE_SAVE
+		_ctrlListLeft lbsetdata [_cursel,_datastr];
 
-
-
-		//update data
-		{
-			_ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _x);
-			if(ctrlEnabled _ctrlList)exitWith{
-				//load
-				_cursel = lbCurSel _ctrlList;
-				_datastr = _ctrlList lbdata _cursel;
-				DECOMPILE_DATA
-				SPLIT_SAVE
-
-				//update
-				_damage set [_damageID, 0];
-				_center setHitIndex [_damageID,0];
-				_ctrlIcon ctrlEnable false;
-				_ctrlIcon ctrlShow false;
-
-				//save
-				COMPILE_SAVE
-				_ctrlList lbsetdata [_cursel,_datastr];
-			};
-		} forEach [IDCS_LEFT];
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
@@ -1050,6 +1057,7 @@ switch _mode do {
 		private _ctrlSort = _display displayctrl (IDC_RSCDISPLAYARSENAL_SORT + IDC_JNG_TAB_REARM_SORT);
 		private _cursel = lbCurSel _ctrlSort;
 		private _dataStr = _ctrlSort lbData _cursel; //"[-1]"
+		diag_log [_ctrlSort,_cursel,_dataStr];
 		DECOMPILE_DATA
 
 		private _turret = _data; //[-1]
@@ -1199,10 +1207,11 @@ switch _mode do {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "Preview":{
 		if!(isnil "jna_preview_This")exitWith{};//inpatient person spamming the button
-		_display = _this select 0;
-		_data = _this select 1;
-		_index = _this select 2;
-
+		private _display = _this select 0;
+		private _data = _this select 1;
+		private _index = _this select 2;
+		
+		
 		SPLIT_SAVE
 		if (_name isEqualTo (_center getVariable "jng_name"))exitWith{};//player is already changing this
 
@@ -1222,7 +1231,7 @@ switch _mode do {
 			//this is called by the server
 			jn_fnc_garage_requestVehicleMessage = {
 				params ["_message"];//server lets us know if we can use vehicle (true/false)
-
+				
 				_display = jna_preview_This select 0;
 				_data = jna_preview_This select 1;
 				_index = jna_preview_This select 2;
@@ -1324,32 +1333,46 @@ switch _mode do {
 
 					//addnew
 
+					
+
+					
+					
 					//repair icons
-					_hitpoints = getAllHitPointsDamage _center;
+					private _hitpoints = getAllHitPointsDamage _center;
 					_ctrlList = [];
+									
+					private _cfg = (configfile >> "cfgvehicles" >> _type);
+					private _costVehicle = getNumber(_cfg >> "cost");
+					private _costNode = _costVehicle/1000/count _hitpoints; //repair cost per node
+					
 					if(count _hitpoints > 0)then{
 						{
-							_selectionName = _x;
+							private _selectionName = _x;
 							if!(_selectionName isEqualTo "")then{
-								_damage = _hitpoints select 2 select _foreachindex;
+								private _damage = _hitpoints select 2 select _foreachindex;
 								if(_damage == 0)exitWith{};
-
-								_ctrl = _display ctrlCreate ["RscButtonArsenal",-1];
+								
+								private _costNodeW = round(_damage * _costNode)+1;
+								
+								
+								private _ctrl = _display ctrlCreate ["RscButtonArsenal",-1];
 								_ctrl ctrlsetposition [0,0,0];
 								_ctrl ctrlSetText "\A3\ui_f\data\IGUI\Cfg\Actions\repair_ca.paa";
 								_ctrl ctrlenable false;
 								_ctrl ctrlshow false;
-								_ctrl ctrlSetTooltip (_selectionName +" " + str _damage+" " + str _foreachindex);
+								_ctrl ctrlSetTooltip (_selectionName +" cost: " + str _costNodeW);
 								_ctrl ctrlsetfade 0;
 								_ctrl ctrlSetTextColor [1, 0, 0, 1];
 								_ctrl ctrlcommit 0;
 								_ctrl setVariable ["location",_center selectionposition _selectionName];
 								_ctrl ctrladdeventhandler ["buttonclick",format ["
-									_damageID = %1;
-									_display = uiNamespace getVariable 'arsanalDisplay';
+									private _ctrlIcon =  _this select 0;
+									private _damageID = %1;
+									private _costNodeW = %2;
+									private _display = uiNamespace getVariable 'arsanalDisplay';
 
-									['SelectRepairIcon',[_display,_damageID,_this select 0]] call jn_fnc_garage;
-								",_foreachindex,_ctrl]];
+									['SelectRepairIcon',[_display,_ctrlIcon,_damageID,_costNodeW]] call jn_fnc_garage;
+								",_foreachindex,_costNodeW]];
 
 								_ctrlList pushback _ctrl;
 							};
@@ -1503,10 +1526,12 @@ switch _mode do {
 			};
 
 			//ask server to lock vehicle for us so others cant access it
-			_data = jna_preview_This select 1;
-			_index = jna_preview_This select 2;
+			private _object = UINamespace getVariable "jn_object";
+			private _data = jna_preview_This select 1;
+			private _index = jna_preview_This select 2;
+			
 			SPLIT_SAVE//get vehicle name
-			[_name, _index, name player, getPlayerUID player, clientOwner] remoteExecCall ["jn_fnc_garage_requestVehicle",2];
+			[_name, _index, name player, getPlayerUID player, clientOwner,_object] remoteExecCall ["jn_fnc_garage_requestVehicle",2];
 		};
 
 		//if we didnt get a message from server close the program with a error
@@ -1773,27 +1798,25 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
 	case "buttonCargo":{
-		_display = _this select 0;
-		_add = _this select 1; //-1 or 1
-
-		_ctrlList = ctrlnull;
-		_index = -1;
-		_lbcursel = -1;
+		params["_display","_add"];
+		private _center = (missionnamespace getvariable ["JNG_CENTER",objnull]);
+		private _ctrlList = ctrlnull;
+		private _index = -1;
+		private _lbcursel = -1;
 		{
 			_ctrlList = _display displayctrl (IDC_RSCDISPLAYARSENAL_LIST + _x);
 			if (ctrlenabled _ctrlList) exitwith {_lbcursel = lbcursel _ctrlList;_index = _x};
 		} foreach [IDCS_RIGHT];
 
-		_ctrlSort = _display displayctrl (IDC_RSCDISPLAYARSENAL_SORT + IDC_JNG_TAB_REARM_SORT);
-		_curselSort = lbCurSel _ctrlSort;
+		private _ctrlSort = _display displayctrl (IDC_RSCDISPLAYARSENAL_SORT + IDC_JNG_TAB_REARM_SORT);
+		private _curselSort = lbCurSel _ctrlSort;
 		_dataStr = _ctrlSort lbData _curselSort; //"[-1]"
 		DECOMPILE_DATA
 		_turret = _data; //[-1]
-
+		
 		_dataStr = _ctrlList lnbData [_lbcursel,0];
 		DECOMPILE_DATA
 		SPLIT_REARM
-
 
 		//TODO add real ammo count thats in the crate
 		_amount = round(random 10000);
@@ -1824,9 +1847,10 @@ switch _mode do {
 		private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft);
 		private _cursel = lbCurSel _ctrlListLeft;
 		private _datastr = _ctrlListLeft lbdata _cursel;
+
 		DECOMPILE_DATA
 		SPLIT_SAVE
-
+		
 		private _found = false;
 		{
 			_turret2 = _x select 0;
@@ -1842,39 +1866,46 @@ switch _mode do {
 		if(!_found)then{
 			_ammoClassic pushBack [_turret2,_magazine, _currentAmount];
 		};
-
+		
 		COMPILE_SAVE
 		_ctrlListLeft lbSetData [_cursel, _datastr];
 	};
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "ShowStats": {
-		_display = _this select 0;
-
-		_ctrlStats = _display displayctrl IDC_RSCDISPLAYARSENAL_STATS_STATS;
-
-		_ctrlStatsPos = ctrlposition _ctrlStats;
+		params ["_display"];
+		
+		private _ctrlStats = _display displayctrl IDC_RSCDISPLAYARSENAL_STATS_STATS;
+		private _ctrlStatsPos = ctrlposition _ctrlStats;
 		_ctrlStatsPos set [0,0];
 		_ctrlStatsPos set [1,0];
-		_ctrlBackground = _display displayctrl IDC_RSCDISPLAYARSENAL_STATS_STATSBACKGROUND;
-		_barMin = 0.01;
-		_barMax = 1;
+		
+		private _ctrlBackground = _display displayctrl IDC_RSCDISPLAYARSENAL_STATS_STATSBACKGROUND;
+		private _barMin = 0.01;
+		private _barMax = 1;
+
+		private _object = UINamespace getVariable "jn_object";
 
 		_statControls = [
-			[IDC_RSCDISPLAYARSENAL_STATS_STAT1,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT1, " 001 liter fuel"],
-			[IDC_RSCDISPLAYARSENAL_STATS_STAT2,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT2, " 1kg metal for welding"],
-			[IDC_RSCDISPLAYARSENAL_STATS_STAT3,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT3, " 12 engine parts   and  1 windows"],
-			[IDC_RSCDISPLAYARSENAL_STATS_STAT4,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT4, " 6 tracks         and            10 tires"],
-			[IDC_RSCDISPLAYARSENAL_STATS_STAT5,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT5, "4kg lectronics    and    10 Lamps"]
+			[IDC_RSCDISPLAYARSENAL_STATS_STAT1,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT1, "xxxxxx"],
+			[IDC_RSCDISPLAYARSENAL_STATS_STAT2,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT2, "xxxxxx"],
+			[IDC_RSCDISPLAYARSENAL_STATS_STAT3,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT3, "xxxxxx"],
+			[IDC_RSCDISPLAYARSENAL_STATS_STAT4,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT4, " ?? paint Liters ??"],
+			[IDC_RSCDISPLAYARSENAL_STATS_STAT5,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT5, " ?? and ideas what else ??"]
 		];
 
 		{
 			_ctrlStat = _display displayctrl (_x select 0);
 			_ctrlText = _display displayctrl (_x select 1);
 
-			_ctrlStat progresssetposition (random 1);
+			_ctrlStat progresssetposition 0;
 			_ctrlText ctrlsettext (_x select 2);
 		} forEach _statControls;
+		
+		["UpdatePoints",[_object getVariable ["jng_fuel",0],STATTYPE_FUEL]] call jn_fnc_garage;
+		["UpdatePoints",[_object getVariable ["jng_ammoPoints",0],STATTYPE_AMMO]] call jn_fnc_garage;
+		["UpdatePoints",[_object getVariable ["jng_repairPoints",0],STATTYPE_REPAIR]] call jn_fnc_garage;
+		
 		_ctrlStats ctrlsetfade 0;
 		_ctrlStats ctrlcommit FADE_DELAY;
 	};
@@ -1908,6 +1939,35 @@ switch _mode do {
 		};
 		//update all clients, update color
 		["updateVehicleSingleData",[_name,_index,nil,_locked]] call jn_fnc_garage;
+	};
+	
+		///////////////////////////////////////////////////////////////////////////////////////////
+	case "UpdatePoints":{
+		params["_amount","_type"];
+		
+		private _object = UINamespace getVariable "jn_object";
+		
+		private _ctrlStat = _display displayctrl (IDC_RSCDISPLAYARSENAL_STATS_STAT1 +_type);
+		private _ctrlText = _display displayctrl (IDC_RSCDISPLAYARSENAL_STATS_STATTEXT1 +_type);
+		
+		_ctrlStat progresssetposition 1;//TODO
+		
+		_text = switch _type do{
+			case STATTYPE_FUEL:{
+				_object setVariable ["jng_fuel",_amount];
+				"Fuel: %1"
+			};
+			case STATTYPE_AMMO:{
+				_object setVariable ["jng_ammoPoints",_amount];
+				"Ammo points: %1x"
+			};
+			case STATTYPE_REPAIR:{
+				_object setVariable ["jng_repairPoints",_amount];
+				"Repair points: %1x"
+			};
+		};
+		_text = format[_text, _amount];
+		_ctrlText ctrlsettext _text;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////////////////

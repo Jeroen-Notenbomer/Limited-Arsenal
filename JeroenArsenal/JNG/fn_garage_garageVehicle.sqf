@@ -15,18 +15,19 @@
 
 #include "defineCommon.inc"
 
-params [ ["_vehicle",objNull,[objNull]] ];
+params [ ["_vehicle",objNull,[objNull]] ,["_object",objNull,[objNull]]];
 
 //incase you are looking to attached item
 if !(isnull (attachedto _vehicle))then{_vehicle = attachedto _vehicle};
 
 //close if it couldnt save
-_message = _vehicle call jn_fnc_garage_canGarageVehicle;
+_message = [_vehicle,_object] call jn_fnc_garage_canGarageVehicle;
 if!(_message isEqualTo "")exitWith {hint _message};
 
 //save it on server
-_dataAndIndex = _vehicle call jn_fnc_garage_getVehicleData;
-_dataAndIndex remoteExecCall ["jn_fnc_garage_addVehicle",2];
+private _data = _vehicle call jn_fnc_garage_getVehicleData;
+private _index = _vehicle call jn_fnc_garage_getVehicleIndex;
+[_data,_index,_object] remoteExecCall ["jn_fnc_garage_addVehicle",2];
 
 //delete attach weapon
 private _attachItems = [];
@@ -42,6 +43,5 @@ private _attachItems = [];
 deleteVehicle _vehicle;
 
 //set message it was saved
-_data = _dataAndIndex select 0;
 SPLIT_SAVE
 hint (_name + " stored in garage");

@@ -13,12 +13,13 @@
 */
 
 if(!isServer)exitWith{};
-params ["_clientOwner"];
+params ["_clientOwner","_object"];
 
-_temp = missionnamespace getVariable ["jng_playersInGarage",[]];
+ private _temp = _object getVariable ["jng_playersInGarage",[]];
 _temp pushBackUnique _clientOwner;
-missionnamespace setVariable ["jng_playersInGarage",_temp,true];
+_object setVariable ["jng_playersInGarage",_temp,true];
+
+diag_log ["open Garage for: clientOwner ",_clientOwner];
 
 call compile preProcessFileLineNumbers "JeroenArsenal\JNG\recompile.sqf";
-
-["Open",[jng_vehicleList,jng_ammoList]] remoteExecCall ["jn_fnc_garage", _clientOwner];
+["Open"] remoteExecCall ["jn_fnc_garage", _clientOwner];

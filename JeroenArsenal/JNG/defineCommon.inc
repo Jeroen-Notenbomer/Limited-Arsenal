@@ -1,6 +1,13 @@
+#include "..\defineCommon.inc"
+
 #include "\A3\ui_f\hpp\defineDIKCodes.inc"
 #include "\A3\Ui_f\hpp\defineResinclDesign.inc"
 
+
+#define STATTYPE_FUEL 0
+#define STATTYPE_AMMO 1
+#define STATTYPE_REPAIR 2
+#define STATTYPES [STATTYPE_FUEL,STATTYPE_AMMO,STATTYPE_REPAIR]
 #define FADE_DELAY	0.15
 
 #define IDC_JNG_TAB_CAR IDC_RSCDISPLAYARSENAL_TAB_PRIMARYWEAPON
@@ -41,7 +48,7 @@
 #define IDCS	[IDCS_LEFT,IDCS_RIGHT]
 
 #define DECOMPILE_DATA\
-	private _data = call compile _dataStr;
+	private _data = if(_dataStr =="")then{[]}else{parseSimpleArray _dataStr};
 #define SPLIT_SAVE\
 	private _name = _data select 0;\
 	private _beingChanged = _data select 1;\
@@ -58,8 +65,8 @@
 	private _fuelcargo = _data select 12;
 #define COMPILE_SAVE\
 	if(isnil "_name" || isnil "_beingChanged" || isnil "_locked" || isnil "_lockedName"  || isnil "_type" || isnil "_texture" || isnil "_animations" || isnil "_ammoClassic"|| isnil "_ammoPylon"|| isnil "_ammoClassic" || isnil "_damage" || isnil "_fuel" || isnil "_fuelcargo")then{\
-		["Error: ERROR COMPILE_SAVE"] call BIS_fnc_error;\
-		_error_compile_save = "ERROR COMPILE_SAVE fn_garage.sqf (JGA)";\
+		["ERROR COMPILE_SAVE JGA"] call BIS_fnc_error;\
+		diag_log "ERROR COMPILE_SAVE JGA";\
 	};\
 	private _data = [_name, _beingChanged, _locked, _lockedName, _type, _texture, _animations, _ammoClassic, _ammoPylon, _damage, _attachItem, _fuel, _fuelcargo];\
 	private _datastr = str _data;
@@ -97,3 +104,8 @@
 	};\
 	(_prefix + (str _amount) + _suffix);\
 };
+
+
+#define MAX_DISTANCE_TO_STORE 40
+#define MAX_DISTANCE_TO_REFUEL 10
+#define INT_FUELCONSUMTION_MULTIPLIER 40//how much more fuel is used per tick;

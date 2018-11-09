@@ -745,7 +745,7 @@ switch _mode do {
 
                     for "_l" from 0 to ((lnbsize _ctrlList select 0) - 1) do {
                         _dataStr = _ctrlList lnbdata [_l,0];
-                        _data = call compile _dataStr;
+                        _data = parseSimpleArray _dataStr;
                         _item = _data select 0;
                         _amount = 0;
                         {
@@ -862,7 +862,7 @@ switch _mode do {
 
         for "_l" from 0 to (lbsize _ctrlList - 1) do {
             private _dataStr = _ctrlList lbdata _l;
-            private _data = call compile _dataStr;
+            private _data = parseSimpleArray _dataStr;
             private _item_l = _data select 0;
             if (_item isEqualTo _item_l) exitwith {
                 _ctrlList lbsetcursel _l;
@@ -987,7 +987,7 @@ switch _mode do {
         _rowSize = if _type then{((lnbSize _ctrlList select 0) - 1);}else{(lbsize _ctrlList - 1);};
         for "_l" from 0 to _rowSize do {
             _dataStr = if _type then{_ctrlList lnbdata [_l,0]}else{_ctrlList lbdata _l};
-            _dataCurrent = call compile _dataStr;
+            _dataCurrent = parseSimpleArray _dataStr;
             _itemCurrent = _dataCurrent select 0;
             _amountCurrent = _dataCurrent select 1;
             _displayNameCurrent = _dataCurrent select 2;
@@ -1051,7 +1051,7 @@ switch _mode do {
         _rowSize = if _type then{((lnbSize _ctrlList select 0) - 1);}else{(lbsize _ctrlList - 1);};
         for "_l" from 0 to _rowSize do {
             _dataStr = if _type then{_ctrlList lnbdata [_l,0]}else{_ctrlList lbdata _l};
-            _dataCurrent = call compile _dataStr;
+            _dataCurrent = parseSimpleArray _dataStr;
             _itemCurrent = _dataCurrent select 0;
             _amountCurrent = _dataCurrent select 1;
             _displayNameCurrent = _dataCurrent select 2;
@@ -1165,7 +1165,7 @@ switch _mode do {
         _type = (ctrltype _ctrlList == 102);
         _cursel = lbcursel _ctrlList;
         _dataStr = if _type then{_ctrlList lnbData [_l,0]}else{_ctrlList lbdata _l};
-        _data = call compile _dataStr;
+        _data = parseSimpleArray _dataStr;
         _item = _data select 0;
         _amount = _data select 1;
         _displayName = _data select 2;
@@ -1331,7 +1331,7 @@ switch _mode do {
         _cursel = lbcursel _ctrlList;
         _type = (ctrltype _ctrlList == 102);
         _dataStr = if _type then{_ctrlList lnbData [_cursel,0]}else{_ctrlList lbdata _cursel};
-        _data = call compile _dataStr;
+        _data = parseSimpleArray _dataStr;
         _item = _data select 0;
 
 
@@ -1372,7 +1372,7 @@ switch _mode do {
         private _cursel = lbcursel _ctrlList;
         private _type = (ctrltype _ctrlList == 102);
         private _dataStr = if _type then{_ctrlList lnbData [_cursel,0]}else{_ctrlList lbdata _cursel};
-        private _data = call compile _dataStr;
+        private _data = parseSimpleArray _dataStr;
         private _item = _data select 0;
         private _amount = _data select 1;
         private _displayName = _data select 2;
@@ -1838,7 +1838,7 @@ switch _mode do {
         _columns = count lnbGetColumnsPosition _ctrlList;
         for "_r" from 0 to (_rows - 1) do {
             _dataStr = _ctrlList lnbData [_r,0];
-            _data = call compile _dataStr;
+            _data = parseSimpleArray _dataStr;
             _amount = _data select 1;
             _grayout = false;
             if ((_amount <= _min) AND (_amount != -1) AND (_amount !=0) AND !([player] call isMember)) then{_grayout = true};
@@ -1878,7 +1878,7 @@ switch _mode do {
         } foreach [IDCS_RIGHT];
 
         _dataStr = _ctrlList lnbData [_lbcursel,0];
-        _data = call compile _dataStr;
+        _data = parseSimpleArray _dataStr;
         _item = _data select 0;
         _amount = _data select 1;
 
@@ -2069,7 +2069,7 @@ switch _mode do {
 
         if (isclass _itemCfg) then {
             _dataStr = param [1,if (ctrltype _ctrlList == 102) then {_ctrlList lnbdata [_cursel,0]} else {_ctrlList lbdata _cursel}];
-            _data = call compile _dataStr;
+            _data = parseSimpleArray _dataStr;
             _item = _data select 0;
 
             _ctrlInfo = _display displayctrl IDC_RSCDISPLAYARSENAL_INFO_INFO;

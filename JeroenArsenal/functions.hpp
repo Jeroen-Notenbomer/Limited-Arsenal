@@ -1,5 +1,9 @@
 
 class JN {
+	class Common {
+		file = "JeroenArsenal\Common";
+		class common_addActionSelect {};
+	};
 	class JNA {
 		file = "JeroenArsenal\JNA";
 		class arsenal {};
@@ -32,8 +36,27 @@ class JN {
 		class garage_getVehicleData {};
 		class garage_garageVehicle {};
 		class garage_canGarageVehicle {};
+		class garage_updatePoints {};
 	};
-
+	
+	class JNG_Fuel {
+		file = "JeroenArsenal\JNG\Fuel";
+		class garage_fuel_consumsion_init {};
+		class garage_fuel_consumsion_start {};
+		class garage_fuel_consumsion_stop {};
+		class garage_fuel_refuel {};
+		class garage_fuel_defuel {};
+		class garage_fuel_addActionRefuel {};
+	};
+	
+	class JNG_Ammo {
+		file = "JeroenArsenal\JNG\Ammo";
+	};
+	
+	class JNG_Repair {
+		file = "JeroenArsenal\JNG\Repair";
+	};
+	
 	class JNL {
 		file = "JeroenArsenal\JNL";
 		class logistics_init {};

@@ -1,4 +1,5 @@
-params [ ["_vehicle",objNull,[objNull]] ];
+#include "defineCommon.inc"
+params [ ["_vehicle",objNull,[objNull]], ["_object",objNull,[objNull]]];
 
 if (isNull _vehicle) exitWith {"You are not looking at a vehicle"};
 if !(alive _vehicle) exitWith {"You cannot add destroyed vehicles to your garage"};
@@ -13,7 +14,7 @@ _uid = getPlayerUID player; private _owner = _vehicle getVariable["vehOwner", _u
 if!(_owner isEqualTo _uid)exitWith{"This is not my vehicle, I need to ask the owner to unlock it first"};
 
 //max distance
-if (_vehicle distance getMarkerPos guer_respawn > 50) exitWith {"Vehicle must be within 50m of the flag"};
+if (_vehicle distance _object > MAX_DISTANCE_TO_STORE) exitWith {format["Vehicle must be within %1m of the flag",MAX_DISTANCE_TO_STORE]};
 
 //return
 "";

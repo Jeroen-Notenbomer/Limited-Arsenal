@@ -490,7 +490,7 @@ switch _mode do {
 				_items = jnva_loadout select _idc;
 				for "_l" from 0 to ((lnbsize _ctrlList select 0) - 1) do {
 					_dataStr = _ctrlList lnbdata [_l,0];
-					_data = call compile _dataStr;
+					_data = parseSimpleArray _dataStr;
 					_item = _data select 0;
 					_amount = 0;
 					{
@@ -559,7 +559,7 @@ switch _mode do {
 		_columns = count lnbGetColumnsPosition _ctrlList;
 		for "_r" from 0 to (_rows - 1) do {
 			_dataStr = _ctrlList lnbData [_r,0];
-			_data = call compile _dataStr;
+			_data = parseSimpleArray _dataStr;
 			_amount = _data select 1;
 			_grayout = false;
 			if ((_amount <= _min) AND (_amount != -1) AND (_amount !=0) AND !([player] call isMember)) then{_grayout = true};
@@ -619,7 +619,7 @@ switch _mode do {
 
 
 		_dataStr = _ctrlList lnbData [_lbcursel,0];
-		_data = call compile _dataStr;
+		_data = parseSimpleArray _dataStr;
 		_item = _data select 0;
 		_amount = _data select 1;
 

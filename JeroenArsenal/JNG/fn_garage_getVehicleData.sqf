@@ -8,7 +8,7 @@ if (_index == -1) exitWith {nil};
 private _type = typeOf _vehicle;
 private _cfg = (configfile >> "CfgVehicles" >> _type);
 private _name = _vehicle getVariable ["JNA_Name",_type];
-private _index = _vehicle call jn_fnc_garage_getVehicleIndex;
+
 
 
 //damage
@@ -123,7 +123,7 @@ private _lockedName = name player;
 //return
 COMPILE_SAVE
 
-[_data, _index]
+_data
 
 
 
