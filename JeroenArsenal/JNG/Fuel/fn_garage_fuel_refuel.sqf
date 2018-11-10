@@ -40,7 +40,9 @@ _this spawn {
 		if(_objectTo isEqualTo _objectFrom)then{
 			_anserMsg = true
 		}else{
-			_anserMsg = [STR_JNG_ACT_REFUELOPTION, STR_JNG_ACT_REFUEL, STR_JNG_ACT_FUELTANK, STR_JNG_ACT_FUELCARGO] call BIS_fnc_guiMessage;
+			_anserMsg = [
+				localize "STR_JNG_ACT_REFUELOPTION", localize "STR_JNG_ACT_REFUEL", localize "STR_JNG_ACT_FUELTANK", localize "STR_JNG_ACT_FUELCARGO"
+			] call BIS_fnc_guiMessage;
 		};
 	};
 	

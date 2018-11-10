@@ -50,7 +50,7 @@ _object addaction [
 		[_script,_conditions,_object] call jn_fnc_common_addActionSelect;
 	},
 	[],
-	6,
+	0,
 	true,
 	false,
 	"",
