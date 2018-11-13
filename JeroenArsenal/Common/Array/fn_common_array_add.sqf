@@ -14,6 +14,7 @@
 
 params["_list","_add"];
 _list = +_list;
+
 if(typeName _add isEqualTo "STRING")then{_add = [_add,1];};
 if(typeName (_add select 0) isEqualTo "STRING")then{_add = [_add]};
 
@@ -21,7 +22,6 @@ if(typeName (_add select 0) isEqualTo "STRING")then{_add = [_add]};
     private _index = _forEachIndex;
     private _name = _x select 0;
     private _amount = _x select 1;
-
 
     if!(_name isEqualTo "")then{//skip empty
 

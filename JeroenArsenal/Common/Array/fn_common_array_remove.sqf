@@ -18,6 +18,10 @@ _list = +_list;
 if(typeName _remove isEqualTo "STRING")then{_remove = [_remove,1];};
 if(typeName (_remove select 0) isEqualTo "STRING")then{_remove = [_remove]};
 
+diag_log "1";
+diag_log _list;
+diag_log "2";
+diag_log _remove;
 {
     private _index = _forEachIndex;
     private _name = _x select 0;
@@ -25,25 +29,27 @@ if(typeName (_remove select 0) isEqualTo "STRING")then{_remove = [_remove]};
 
     if!(_name isEqualTo "")then{//skip items with no nam
         {
-            private _index2 = _forEachIndex;
-            private _name2 = _x select 0;
-            private _amount2 = _x select 1;
+			if!(_x isEqualTo -1)then{
+				private _index2 = _forEachIndex;
+				private _name2 = _x select 0;
+				private _amount2 = _x select 1;
 
-            if(_name isEqualTo _name2)exitWith{
+				if(_name isEqualTo _name2)exitWith{
 
-                if(_amount == -1 || _amount2 == -1)then{
-                    if(_amount == -1)then{
-                        _list set [_forEachIndex, -1]; //remove unlimited item
-                    };
-                }else{
-                    private _newAmount = (_amount2 - _amount);
-                    if(_newAmount > 0)then{
-                        _list set [_forEachIndex, [_name, _newAmount]];
-                    }else{
-                        _list set [_forEachIndex, -1];//mark for removale
-                    };
-                };
-            };
+					if(_amount == -1 || _amount2 == -1)then{
+						if(_amount == -1)then{
+							_list set [_forEachIndex, -1]; //remove unlimited item
+						};
+					}else{
+						private _newAmount = (_amount2 - _amount);
+						if(_newAmount > 0)then{
+							_list set [_forEachIndex, [_name, _newAmount]];
+						}else{
+							_list set [_forEachIndex, -1];//mark for removale
+						};
+					};
+				};
+			};
         }forEach _list;
     };
 }forEach _remove;

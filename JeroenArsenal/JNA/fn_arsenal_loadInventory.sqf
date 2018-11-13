@@ -15,7 +15,7 @@ private  _addToArray = {
 	_amount = _this select 3;
 
 	if!(_index == -1 || _item isEqualTo ""||_amount == 0)then{
-		_array set [_index,[_array select _index,[_item,_amount]] call jn_fnc_arsenal_addToArray];
+		_array set [_index,[_array select _index,[_item,_amount]] call jn_fnc_common_array_add];
 	};
 };
 
@@ -28,7 +28,7 @@ private _removeFromArray = {
 	_amount = _this select 3;
 
 	if!(_index == -1 || _item isEqualTo ""|| _amount == 0)then{
-		_array set [_index,[_array select _index,[_item,_amount]] call jn_fnc_arsenal_removeFromArray];
+		_array set [_index,[_array select _index,[_item,_amount]] call jn_fnc_common_array_remove];
 	};
 };
 
@@ -176,7 +176,7 @@ private _assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inve
 	private _index = _item call jn_fnc_arsenal_itemType;
 
 	if(_index == -1) then {
-		_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_arsenal_addToArray;
+		_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_common_array_add;
 	} else {
 
 		//TFAR fix
@@ -202,7 +202,7 @@ private _assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inve
 				[_arrayTaken,_index,_item,_amount]call _addToArray;
 				[_availableItems,_index,_item,_amount]call _removeFromArray;
 			} else {
-				_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_arsenal_addToArray;
+				_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_common_array_add;
 			};
 		};
 
@@ -233,14 +233,14 @@ private _weapons = [_inventory select 6,_inventory select 7,_inventory select 8]
 			private _amountMagAvailable = [_availableItems select _indexMag, _itemMag] call jn_fnc_arsenal_itemCount;
 			if (_amountMagAvailable > 0) then {
 				if (_amountMagAvailable < _amountMag) then {
-					_arrayMissing = [_arrayMissing,[_itemMag,_amountMag]] call jn_fnc_arsenal_addToArray;
+					_arrayMissing = [_arrayMissing,[_itemMag,_amountMag]] call jn_fnc_common_array_add;
 					_amountMag = _amountMagAvailable;
 				};
 			[_arrayTaken,_indexMag,_itemMag,_amountMag] call _addToArray;
 			[_availableItems,_indexMag,_itemMag,_amountMag] call _removeFromArray;
 			player addMagazine [_itemMag, _amountMag];
 			} else {
-				_arrayMissing = [_arrayMissing,[_itemMag,_amountMag]] call jn_fnc_arsenal_addToArray;
+				_arrayMissing = [_arrayMissing,[_itemMag,_amountMag]] call jn_fnc_common_array_add;
 			};
 		};
 
@@ -255,7 +255,7 @@ private _weapons = [_inventory select 6,_inventory select 7,_inventory select 8]
 				[_arrayTaken,_index,_item,_amount] call _addToArray;
 				[_availableItems,_index,_item,_amount] call _removeFromArray;
 			} else {
-				_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_arsenal_addToArray;
+				_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_common_array_add;
 			};
 		};
 
@@ -285,7 +285,7 @@ private _weapons = [_inventory select 6,_inventory select 7,_inventory select 8]
 						[_arrayTaken,_indexAcc,_itemAcc,_amountAcc] call _addToArray;
 						[_availableItems,_indexAcc,_itemAcc,_amountAcc] call _removeFromArray;
 					} else {
-						_arrayMissing = [_arrayMissing,[_itemAcc,_amountAcc]] call jn_fnc_arsenal_addToArray;
+						_arrayMissing = [_arrayMissing,[_itemAcc,_amountAcc]] call jn_fnc_common_array_add;
 					};
 				};
 			};
@@ -332,10 +332,10 @@ private _invCallArray = [{removeUniform player;player forceAddUniform _this;},//
 				private _oldItem = [_uniform_old,_vest_old,_backpack_old] select _foreachindex;
 				if !(_oldItem isEqualTo "") then {
 					_oldItem call (_invCallArray select _foreachindex);
-					_arrayReplaced = [_arrayReplaced,[_item,_oldItem]] call jn_fnc_arsenal_addToArray;
+					_arrayReplaced = [_arrayReplaced,[_item,_oldItem]] call jn_fnc_common_array_add;
 					[_arrayTaken,_index,_oldItem,1] call _addToArray;
 				} else {
-					_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_arsenal_addToArray;
+					_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_common_array_add;
 				};
 			};
 		};
@@ -353,7 +353,7 @@ private _invCallArray = [{removeUniform player;player forceAddUniform _this;},//
 
 		if(_index == -1)then{
 			private _amount = 1; // we will never know the ammo count in the magazines anymore :c
-			_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_arsenal_addToArray;
+			_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_common_array_add;
 		} else {
 			private _amountAvailable = [_availableItems select _index, _item] call jn_fnc_arsenal_itemCount;
 			if (_index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL) then {
@@ -365,7 +365,7 @@ private _invCallArray = [{removeUniform player;player forceAddUniform _this;},//
 
 					if(_amountAvailable < _amount) then {
 						_amount = _amountAvailable;
-						_arrayMissing = [_arrayMissing,[_item,(_amount - _amountAvailable)]] call jn_fnc_arsenal_addToArray;
+						_arrayMissing = [_arrayMissing,[_item,(_amount - _amountAvailable)]] call jn_fnc_common_array_add;
 					};
 					[_arrayTaken,_index,_item,_amount] call _addToArray;
 					[_availableItems,_index,_item,_amount] call _removeFromArray;
@@ -385,7 +385,7 @@ private _invCallArray = [{removeUniform player;player forceAddUniform _this;},//
 						[_arrayTaken,_index,_item,_amount] call _addToArray;
 						[_availableItems,_index,_item,_amount] call _removeFromArray;
 					} else {
-						_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_arsenal_addToArray;
+						_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_common_array_add;
 					};
 				};
 			};

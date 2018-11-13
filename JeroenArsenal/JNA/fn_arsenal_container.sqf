@@ -424,7 +424,7 @@ switch _mode do {
 			{
 				_item = _x;
 				_amount = [_items, _item] call jn_fnc_arsenal_itemCount;
-				jnva_loadout set [_index,[jnva_loadout select _index,[_item,_amount]] call jn_fnc_arsenal_addToArray];
+				jnva_loadout set [_index,[jnva_loadout select _index,[_item,_amount]] call jn_fnc_common_array_add];
 			} forEach _itemsUnique2;
 
 		}else{
@@ -657,7 +657,7 @@ switch _mode do {
 					if(_mass <= _max)then{
 						_ctrlList lnbsettext [[_lbcursel,2],str (_amountOld + _count)];
 
-						jnva_loadout set [_index,[jnva_loadout select _index,[_item,_count]] call jn_fnc_arsenal_addToArray];
+						jnva_loadout set [_index,[jnva_loadout select _index,[_item,_count]] call jn_fnc_common_array_add];
 						jnva_loadout_mass = _mass;
 						//[_index, _item, _count] remoteExecCall ["jn_fnc_arsenal_removeItem"];
 						[_object, _index, _item, _count] call jn_fnc_arsenal_removeItem; //Sparker: why execute it on all clients?
@@ -676,7 +676,7 @@ switch _mode do {
 				if(_count > 0)then{
 					_ctrlList lnbsettext [[_lbcursel,2],str (_amountOld - _count)];
 
-					jnva_loadout set [_index,[jnva_loadout select _index,[_item,_count]] call jn_fnc_arsenal_removeFromArray];
+					jnva_loadout set [_index,[jnva_loadout select _index,[_item,_count]] call jn_fnc_common_array_remove];
 					_mass = ["getMassItem",[_item,_count,_index]] call jn_fnc_arsenal_container;
 					jnva_loadout_mass = jnva_loadout_mass - _mass;
 					//[_index, _item, _count] remoteExecCall ["jn_fnc_arsenal_addItem"];

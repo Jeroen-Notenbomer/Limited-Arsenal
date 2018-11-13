@@ -945,7 +945,7 @@ switch _mode do {
 
         //update datalist
         if(_updateDataList)then{
-            _dataList set [_index, [_dataList select _index, [_item, _amount]] call jn_fnc_arsenal_addToArray];
+            _dataList set [_index, [_dataList select _index, [_item, _amount]] call jn_fnc_common_array_add];
             _object setVariable ["jna_dataList", _dataList];
         };
         private _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
@@ -1019,7 +1019,7 @@ switch _mode do {
 
         //update datalist
         if(_updateDataList)then{
-            _dataList set [_index, [_dataList select _index, [_item, _amount]] call jn_fnc_arsenal_removeFromArray];
+            _dataList set [_index, [_dataList select _index, [_item, _amount]] call jn_fnc_common_array_remove];
             _object setVariable ["jna_dataList", _dataList];
         };
 
@@ -2440,7 +2440,7 @@ switch _mode do {
 
         //check items that already exist
         {
-            _itemsUnifrom = [_itemsUnifrom,_x] call jn_fnc_arsenal_removeFromArray;
+            _itemsUnifrom = [_itemsUnifrom,_x] call jn_fnc_common_array_remove;
         } forEach (uniformItems player);
 
         //add non existing items to uniform
@@ -2486,7 +2486,7 @@ switch _mode do {
 
         //check items that already exist
         {
-            _itemsBackpack = [_itemsBackpack,_x] call jn_fnc_arsenal_removeFromArray;
+            _itemsBackpack = [_itemsBackpack,_x] call jn_fnc_common_array_remove;
         } forEach (backpackitems player);
 
         //add non existing items

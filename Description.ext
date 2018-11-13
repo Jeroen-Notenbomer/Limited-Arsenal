@@ -1,5 +1,17 @@
-
 allowFunctionsRecompile = 1;
 class CfgFunctions {
 	#include "JeroenArsenal\functions.hpp"
+};
+
+class Vehicles {
+	class car1 {
+		type = "C_Hatchback_01_sport_F";
+		fuel = 80;
+		repair = 2000;
+	}
+	class car2 {
+		type = "rhsusf_m1025_w_mk19";
+		fuel = 80;
+		repair = 3000;
+	}
 };

@@ -4,11 +4,15 @@ class JN {
 		file = "JeroenArsenal\Common";
 		class common_addActionSelect {};
 	};
+	class Common_Array {
+		file = "JeroenArsenal\Common\array";
+		class common_array_add {};
+		class common_array_remove {};
+	};
 	class JNA {
 		file = "JeroenArsenal\JNA";
 		class arsenal {};
 		class arsenal_addItem {};
-		class arsenal_addToArray {};
 		class arsenal_cargoToArray {};
 		class arsenal_cargoToArsenal {};
 		class arsenal_container {};
@@ -17,7 +21,6 @@ class JN {
 		class arsenal_itemCount {};
 		class arsenal_itemType {};
 		class arsenal_loadInventory {};
-		class arsenal_removeFromArray {};
 		class arsenal_removeItem {};
 		class arsenal_requestOpen {};
 		class arsenal_requestClose {};
@@ -45,16 +48,22 @@ class JN {
 		class garage_fuel_consumsion_start {};
 		class garage_fuel_consumsion_stop {};
 		class garage_fuel_refuel {};
-		class garage_fuel_defuel {};
+		//class garage_fuel_defuel {};
 		class garage_fuel_addActionRefuel {};
 	};
 	
-	class JNG_Ammo {
-		file = "JeroenArsenal\JNG\Ammo";
+	class JNG_Rearm {
+		file = "JeroenArsenal\JNG\Rearm";
+		class garage_rearm_getLoadoutCfg {};
+		class garage_rearm_getLoadoutCurrent {};
+		class garage_rearm_getLoadoutMissing {};
+		class garage_rearm_getLoadoutCost {};
+		class garage_rearm_getCost {};
 	};
 	
 	class JNG_Repair {
 		file = "JeroenArsenal\JNG\Repair";
+		
 	};
 	
 	class JNL {

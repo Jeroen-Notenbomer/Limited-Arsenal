@@ -503,9 +503,9 @@ switch _mode do {
 	case "removeVehicle":{
 		_nameRemove = _this select 0;
 		_index = _this select 1;
-
+		
 		_display =  uiNamespace getVariable ["arsanalDisplay","No display"];
-
+		
 		if (typeName _display == "STRING") exitWith {};
 		if(str _display isEqualTo "No display")exitWith{};
 
@@ -1231,10 +1231,10 @@ switch _mode do {
 			//this is called by the server
 			jn_fnc_garage_requestVehicleMessage = {
 				params ["_message"];//server lets us know if we can use vehicle (true/false)
-				
-				_display = jna_preview_This select 0;
-				_data = jna_preview_This select 1;
-				_index = jna_preview_This select 2;
+				private _object = UINamespace getVariable "jn_object";
+				private _display = jna_preview_This select 0;
+				private _data = jna_preview_This select 1;
+				private _index = jna_preview_This select 2;
 
 				//message recieved from server no need to close this script after 1 sec anymore
 				terminate jna_handlePreview2;
@@ -1261,7 +1261,7 @@ switch _mode do {
 							DECOMPILE_DATA
 							SPLIT_SAVE
 							if(_name isEqualTo (JNG_CENTER getVariable "jng_name"))exitWith{
-								[_data, _index] remoteExecCall ["jn_fnc_garage_releaseVehicle",2];
+								[_data, _index,_object] remoteExecCall ["jn_fnc_garage_releaseVehicle",2];
 								_found = true;
 							}
 						};
@@ -1623,7 +1623,8 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
 	case "buttonClose": {
-		_display = uiNamespace getVariable "arsanalDisplay";
+		private _display = uiNamespace getVariable "arsanalDisplay";
+		private _object = UINamespace getVariable "jn_object";
 		with missionnamespace do{
 			if( (!isnil "JNG_CENTER") && {!isnull JNG_CENTER} && {JNG_CENTER != player} )then{
 				private _center = JNG_CENTER;
@@ -1638,7 +1639,7 @@ switch _mode do {
 				private _cursel = lbCurSel _ctrlList;
 				private _datastr = _ctrlList lbdata _cursel;
 				DECOMPILE_DATA
-				[_data, _index] remoteExecCall ["jn_fnc_garage_releaseVehicle",2];
+				[_data, _index,_object] remoteExecCall ["jn_fnc_garage_releaseVehicle",2];
 				deleteVehicle _center;
 			};
 			jna_preview_This = nil;
@@ -1649,8 +1650,10 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
 	case "buttonGetVehicle": {
-		_display = _this select 0;
-		_center = JNG_CENTER;
+		private _display = _this select 0;
+		private _center = JNG_CENTER;
+		private _object = UINamespace getVariable "jn_object";
+		
 		if!(_center isEqualTo player)then{
 			private _pos = getpos _center;
 
@@ -1663,7 +1666,7 @@ switch _mode do {
 			SPLIT_SAVE
 
 			//tell the server you took the vehicle
-			[_name, _indexLeft] remoteExecCall ["jn_fnc_garage_removeVehicle",2];
+			[_name, _indexLeft, _object] remoteExecCall ["jn_fnc_garage_removeVehicle",2];
 
 			//remove attachments
 			{

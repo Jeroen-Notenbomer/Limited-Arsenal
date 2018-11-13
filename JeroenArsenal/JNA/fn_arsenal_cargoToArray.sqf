@@ -23,7 +23,7 @@ private _addToArray = {
 	params ["_array","_index","_item","_amount"];
 
 	if!(_index == -1 || _item isEqualTo ""|| _amount == 0)then{
-		_array set [_index,[_array select _index,[_item,_amount]] call jn_fnc_arsenal_addToArray];
+		_array set [_index,[_array select _index,[_item,_amount]] call jn_fnc_common_array_add];
 	};
 };
 
