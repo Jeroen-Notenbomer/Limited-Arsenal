@@ -8,7 +8,7 @@
 	String: magazine class name
 
 	Returns:
-	[_magClass] call jn_fnc_garage_rearm_getCost;
+	[_magClass] call JN_fnc_ammo_getCost;
 	
 */
 

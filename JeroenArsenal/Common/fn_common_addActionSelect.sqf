@@ -4,7 +4,6 @@
 #define TEXTBAD format["<t color='#808080'>%1",localize "STR_JNC_ACT_SELECT"]
 
 
-
 params ["_script","_condition","_object"];
 
 //remove previuse action if existing
@@ -15,7 +14,7 @@ if(!isNil "_id")then{
 };
 
 //add select action
-_id = player addAction [
+private _id = player addAction [
 	TEXTBAD,
 	{
 		private _object = _this select 3 select 0;
@@ -25,20 +24,20 @@ _id = player addAction [
 		player removeAction _id;
 		player setVariable ["jn_selectAction_id",nil];
 		
-		if(isNil "_object")exitwith{hint "not looking at something"};
+		if(isNil "_object")exitwith{hint localize "STR_JNC_ACT_SELECT_NO_OBJECT"};
 		
 		[_object] call _script;
 	},
 	[_object,_script],
-	6,
+	7, 
 	true,
 	false,
 	"",
-	"alive _target && {_target distance _this < 5}"
+	"alive _target"
 
 ];
 
-//check if we need to remove (after REMOVEAFTER secs)
+//check if we need to remove action(after REMOVEAFTER secs)
 [_id, _object,_condition] spawn {
 	params["_id","_object","_condition"];
 	private _timer = REMOVEAFTER;
@@ -53,3 +52,6 @@ _id = player addAction [
 };
 
 player setVariable ["jn_selectAction_id",_id];
+
+
+hint localize "STR_JNC_ACT_SELECT_HINT";

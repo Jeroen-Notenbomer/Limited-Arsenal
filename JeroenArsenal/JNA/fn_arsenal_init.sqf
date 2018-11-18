@@ -1,3 +1,6 @@
+#include "\A3\ui_f\hpp\defineDIKCodes.inc"
+#include "\A3\Ui_f\hpp\defineResinclDesign.inc"
+
 /*
 	Author: Jeroen Notenbomer
 
@@ -13,16 +16,10 @@
 	Usage: object call jn_fnc_arsenal_init;
 	
 */
-
-
-#include "\A3\ui_f\hpp\defineDIKCodes.inc"
-#include "\A3\Ui_f\hpp\defineResinclDesign.inc"
-
-///////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 params [["_object",objNull,[objNull]]];
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 diag_log ("Init JNA: Start " + str _object);
 if(isNull _object)exitWith{["Error: wrong input given '%1'",_object] call BIS_fnc_error;};
 
@@ -170,9 +167,64 @@ if(hasInterface)then{
 			private _conditions = {
 				params ["_object"];
 				
-				!isnull cursorObject && {
-					!(_object isEqualTo cursorObject)
+				!isnull cursorObject
+				&&{
+					_object distance cursorObject < 10;
 				}&&{
+					//check if object has inventory
+					private _className = typeOf cursorObject;
+					private _tb = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxbackpacks");
+					private _tm = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxmagazines");
+					private _tw = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxweapons");
+					if (_tb > 0  || _tm > 0 || _tw > 0) then {true;} else {false;};
+				
+				}//return
+			};
+						
+			[_script,_conditions,_object] call jn_fnc_common_addActionSelect;
+		},
+        [],
+        6,
+        true,
+        false,
+        "",
+        "alive _target && {_target distance _this < 5}"
+			
+    ];
+	
+	//add Action to unload object
+    _object addaction [
+		format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNA_ACT_UNLOAD"],
+        {
+			private _object = _this select 0;
+			
+			private _script =  {
+				params ["_object"];//object action was attached to
+				
+				//check if player is looking at some object
+				_object_selected = cursorObject;//selected object
+				
+				if(isnull _object_selected)exitWith{hint localize "STR_JNA_ACT_CONTAINER_SELECTERROR1"; };
+
+				//check if object is in range
+				if(_object distance cursorObject > 10)exitWith{hint localize "STR_JNA_ACT_CONTAINER_SELECTERROR2";};
+
+				//check if object has inventory
+				private _className = typeOf _object_selected;
+				private _tb = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxbackpacks");
+				private _tm = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxmagazines");
+				private _tw = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxweapons");
+				if !(_tb > 0  || _tm > 0 || _tw > 0) exitWith{hint localize "STR_JNA_ACT_CONTAINER_SELECTERROR3";};
+
+
+				[_object_selected,_object] call jn_fnc_arsenal_cargoToArsenal;
+			};
+			
+			private _conditions = {
+				params ["_object"];
+				
+				!isnull cursorObject
+				&&{
 					_object distance cursorObject < 10;
 				}&&{
 					//check if object has inventory

@@ -1,4 +1,4 @@
-#include "..\defineCommon.inc"
+#include "defineCommon.inc"
 
 params["_unit"];
 _handle = [_unit]spawn {

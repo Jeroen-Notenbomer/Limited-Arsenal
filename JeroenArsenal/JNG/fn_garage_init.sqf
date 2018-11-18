@@ -32,9 +32,9 @@ if(isServer)then{
 	diag_log ("Init JNG: server " + str _object);
 
     //load default if it was not loaded from savegame
-    private _vehicleList = _object getVariable "jng_vehicleList";
-    if(isnil "_vehicleList")then{
-        _object setVariable ["jng_vehicleList" ,[[],[],[],[],[],[]]];
+    private _vehicleLists = _object getVariable "jng_vehicleLists";
+    if(isnil "_vehicleLists")then{
+        _object setVariable ["jng_vehicleLists" ,[[],[],[],[],[],[]]];
     };
 	private _fuel = _object getVariable "jng_fuel";
     if(isnil "_fuel")then{

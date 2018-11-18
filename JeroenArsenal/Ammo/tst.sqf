@@ -1,6 +1,6 @@
 _vehicle = cursorObject;
 
-_missingAmmoTurrets = _vehicle call jn_fnc_garage_rearm_getLoadoutMissing;
+_missingAmmoTurrets = _vehicle call JN_fnc_ammo_getLoadoutMissing;
 
 _costTotal = [];
 {

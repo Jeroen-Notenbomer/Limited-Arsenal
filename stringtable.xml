@@ -6,7 +6,15 @@
 				<Original>Select</Original>
 				<German>Auswählen</German>
 			</Key>
-			
+			<Key ID="STR_JNC_ACT_CANCEL">
+				<Original>Cancel</Original>
+			</Key>
+			<Key ID="STR_JNC_ACT_SELECT_HINT">
+				<Original>Select a object</Original>
+			</Key>
+			<Key ID="STR_JNC_ACT_SELECT_NO_OBJECT">
+				<Original>Not looking at something</Original>
+			</Key>
 		</Container>
 	</Package>
 	<Package name="Arsenal">
@@ -15,7 +23,10 @@
 				<Original>Arsenal</Original>
 			</Key>
 			<Key ID="STR_JNA_ACT_CONTAINER_OPEN">
-				<Original>Arsenal for objects</Original>
+				<Original>Load to vehicle</Original>
+			</Key>
+			<Key ID="STR_JNA_ACT_UNLOAD">
+				<Original>Unload from vehicle</Original>
 			</Key>
 			<Key ID="STR_JNA_ACT_CONTAINER_SELECTERROR1">
 				<Original>Not looking at object</Original>
@@ -42,17 +53,35 @@
 			<Key ID="STR_JNG_ACT_CONTAINER_SELECTERROR2">
 				<Original>Not looking at a vehicle</Original>
 			</Key>
-			<Key ID="STR_JNG_ACT_REFUEL">
+		</Container>
+	</Package>
+	<Package name="Fuel">
+		<Container name="Actions">
+			<Key ID="STR_JN_FUEL_ACT_REFUEL">
 				<Original>Refuel</Original>
 			</Key>
-			<Key ID="STR_JNG_ACT_REFUELOPTION">
+			<Key ID="STR_JN_FUEL_ACT_REFUELOPTION">
 				<Original>Refuel cargo or tank</Original>
 			</Key>
-			<Key ID="STR_JNG_ACT_FUELTANK">
+			<Key ID="STR_JN_FUEL_ACT_FUELTANK">
 				<Original>Tank</Original>
 			</Key>
-			<Key ID="STR_JNG_ACT_FUELCARGO">
+			<Key ID="STR_JN_FUEL_ACT_FUELCARGO">
 				<Original>Cargo</Original>
+			</Key>
+		</Container>
+	</Package>
+	<Package name="Ammo">
+		<Container name="Actions">
+			<Key ID="STR_JN_AMMO_ACT_REARM">
+				<Original>Rearm</Original>
+			</Key>
+		</Container>
+	</Package>
+	<Package name="Repair">
+		<Container name="Actions">
+			<Key ID="STR_JN_REPAIR_ACT_REPAIR">
+				<Original>Repair</Original>
 			</Key>
 		</Container>
 	</Package>

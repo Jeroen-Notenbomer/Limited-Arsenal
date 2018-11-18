@@ -1,4 +1,4 @@
-params["_vehicle"];
+params[["_vehicle",objNull,[objNull]]];
 
 private _turrets = [];
 private _totalLoadout = [];
@@ -9,7 +9,7 @@ private "_turretLoadout";
 	_x params ["_magClass","_turretPath","_ammoCount"];
 	if!(_turretPath in _turrets)then{
 		_turrets pushBack _turretPath;
-		_totalLoadout pushBack _turretLoadout;
+		if(!isNil "_turretLoadout")then{_totalLoadout pushBack _turretLoadout;};//skip first one
 		_turretLoadout = [];
 	};
 

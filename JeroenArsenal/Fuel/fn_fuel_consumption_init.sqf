@@ -1,3 +1,5 @@
+#include "defineCommon.inc"
+
 /*
 	Author: Jeroen Notenbomer
 
@@ -10,7 +12,7 @@
 
 	Returns:
 	
-	Usage: "player call jn_fnc_garage_fuel_consumsion_init;"
+	Usage: "player call jn_fnc_fuel_consumption_init;"
 	
 */
 
@@ -21,23 +23,23 @@ diag_log ("JNG_FUEL start for player:" + name _unit);
 _unit addEventHandler ["GetInMan", {
 	params ["_unit", "_role", "_vehicle", "_turret"];
 	if(_role isEqualTo "driver")then{
-		_unit call jn_fnc_garage_fuel_consumsion_start;
+		_unit call jn_fnc_fuel_consumption_start;
 	};
 }];
 
 _unit addEventHandler ["GetOutMan", {
 	params ["_unit", "_role", "_vehicle", "_turret"];
 	if(_role isEqualTo "driver")then{
-		_unit call jn_fnc_garage_fuel_consumsion_stop;
+		_unit call jn_fnc_fuel_consumption_stop;
 	};
 }];
 
 _unit addEventHandler ["SeatSwitchedMan", {
 	params ["_unit1", "_unit2", "_vehicle"];
 	if((assignedVehicleRole _unit1 select 0) isEqualTo "driver")then{
-		_unit call jn_fnc_garage_fuel_consumsion_start;
+		_unit call jn_fnc_fuel_consumption_start;
 	}else{
-		_unit call jn_fnc_garage_fuel_consumsion_stop;
+		_unit call jn_fnc_fuel_consumption_stop;
 	};
 }];
 

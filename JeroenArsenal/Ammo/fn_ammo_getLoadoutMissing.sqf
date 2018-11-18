@@ -1,7 +1,7 @@
 params["_vehicle"];
 
-private _loadoutCfg = _vehicle call jn_fnc_garage_rearm_getLoadoutCfg; 
-private _loadoutCurrent = _vehicle call jn_fnc_garage_rearm_getLoadoutCurrent;
+private _loadoutCfg = _vehicle call JN_fnc_ammo_getLoadoutCfg; 
+private _loadoutCurrent = _vehicle call JN_fnc_ammo_getLoadoutCurrent;
 private _loadoutMissing = [];
 private _turrets = [];
 {

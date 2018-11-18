@@ -1,7 +1,12 @@
-if(!isserver)exitwith{};
+params["_objectFrom","_objectTo"];
 
-params [["_object",objNull,[objNull]],"_array"];
-if(isNull _object)exitWith{["Error: wrong input given '%1'",_object] call BIS_fnc_error;};
+private _array = _objectFrom call jn_fnc_arsenal_cargoToArray;
 
-//update datalist on server and client
-[_object, _array] call jn_fnc_arsenal_addItem;
+//clear cargo
+clearMagazineCargoGlobal _objectFrom;
+clearItemCargoGlobal _objectFrom;
+clearweaponCargoGlobal _objectFrom;
+clearbackpackCargoGlobal _objectFrom;
+
+
+[_objectTo,_array] remoteExec ["jn_fnc_arsenal_arrayToArsenal",2];

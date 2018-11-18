@@ -7,7 +7,8 @@ if (_index == -1) exitWith {nil};
 
 private _type = typeOf _vehicle;
 private _cfg = (configfile >> "CfgVehicles" >> _type);
-private _name = _vehicle getVariable ["JNA_Name",_type];
+private _displayName = gettext(_cfg >> "displayName");
+private _name = _vehicle getVariable ["JNA_Name",_displayName];
 
 
 
@@ -18,6 +19,9 @@ if(_damage isEqualTo [])then{
 }else{
 	_damage = _damage select 2;
 };
+
+
+
 
 //Ammo
 private _ammoClassic = [];
@@ -108,12 +112,10 @@ private _attachItem = [];
 } forEach attachedObjects _vehicle;
 
 //fuel
-private _maxFuel = getNumber (configfile >> "CfgVehicles" >> _type >> "fuelCapacity");
-private _fuel = _maxFuel * fuel _vehicle;
-
-//TODO cargo fuels for ace
-private _fuelcargo = 0;
-//if(getfuelcargo _vehicle >=0) then {getfuelcargo _vehicle} else {0};
+private _fuel = _vehicle call JN_fnc_fuel_get;
+private _fuelCap = _vehicle call JN_fnc_fuel_getCapacity;
+private _fuelcargo = _vehicle call JN_fnc_fuel_getCargo;
+private _fuelcargoCap = _vehicle call JN_fnc_fuel_getCargoCapacity;
 
 //set defaults
 private _beingChanged = "";

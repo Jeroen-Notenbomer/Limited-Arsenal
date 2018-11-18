@@ -49,32 +49,40 @@
 
 #define DECOMPILE_DATA\
 	private _data = if(_dataStr =="")then{[]}else{parseSimpleArray _dataStr};
+	
 #define SPLIT_SAVE\
-	private _name = _data select 0;\
-	private _beingChanged = _data select 1;\
-	private _locked = _data select 2;\
-	private _lockedName = _data select 3;\
-	private _type = _data select 4;\
-	private _texture = _data select 5;\
-	private _animations = _data select 6;\
-	private _ammoClassic = _data select 7;\
-	private _ammoPylon = _data select 8;\
-	private _damage = _data select 9;\
-	private _attachItem = _data select 10;\
-	private _fuel = _data select 11;\
-	private _fuelcargo = _data select 12;
+	_data params [\
+		"_name",\
+		"_beingChanged",\
+		"_locked",\
+		"_lockedName",\
+		"_type",\
+		"_texture",\
+		"_animations",\
+		"_ammoClassic",\
+		"_ammoPylon",\
+		"_damage",\
+		"_attachItem",\
+		"_fuel",\
+		"_fuelCap",\
+		"_fuelcargo",\
+		"_fuelcargoCap"\
+	];\
+	
 #define COMPILE_SAVE\
-	if(isnil "_name" || isnil "_beingChanged" || isnil "_locked" || isnil "_lockedName"  || isnil "_type" || isnil "_texture" || isnil "_animations" || isnil "_ammoClassic"|| isnil "_ammoPylon"|| isnil "_ammoClassic" || isnil "_damage" || isnil "_fuel" || isnil "_fuelcargo")then{\
+	if(isnil "_name" || isnil "_beingChanged" || isnil "_locked" || isnil "_lockedName"  || isnil "_type" || isnil "_texture" || isnil "_animations" || isnil "_ammoClassic"|| isnil "_ammoPylon"|| isnil "_ammoClassic" || isnil "_damage" || isnil "_fuel" || isnil "_fuelCap" || isnil "_fuelcargo" || isnil "_fuelcargoCap" || isnil "_fuelCap")then{\
 		["ERROR COMPILE_SAVE JGA"] call BIS_fnc_error;\
 		diag_log "ERROR COMPILE_SAVE JGA";\
 	};\
-	private _data = [_name, _beingChanged, _locked, _lockedName, _type, _texture, _animations, _ammoClassic, _ammoPylon, _damage, _attachItem, _fuel, _fuelcargo];\
+	private _data = [_name, _beingChanged, _locked, _lockedName, _type, _texture, _animations, _ammoClassic, _ammoPylon, _damage, _attachItem, _fuel, _fuelCap,_fuelcargo,_fuelcargoCap];\
 	private _datastr = str _data;
+	
 #define SPLIT_REARM\
 	private _magazine = _data select 0;\
 	private _currentAmount = _data select 1;\
 	private _maxAmount = _data select 2;\
 	private _displayName = _data select 3;
+	
 #define COMPILE_REARM\
 	private _data = [_magazine, _currentAmount, _maxAmount, _displayName];\
 	private _datastr = str _data;
@@ -107,5 +115,3 @@
 
 
 #define MAX_DISTANCE_TO_STORE 40
-#define MAX_DISTANCE_TO_REFUEL 10
-#define INT_FUELCONSUMTION_MULTIPLIER 40//how much more fuel is used per tick;

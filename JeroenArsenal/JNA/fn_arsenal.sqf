@@ -938,13 +938,12 @@ switch _mode do {
 
     ///////////////////////////////////////////////////////////////////////////////////////////  GLOBAL
     case "UpdateItemAdd":{
-        params ["_index","_item","_amount",["_updateDataList",false]];
-
-        private _object = UINamespace getVariable "jn_object";
-        private _dataList =_object getVariable "jna_dataList";
-
+        params ["_index","_item","_amount",["_updateDataList",nil]];
+		
         //update datalist
-        if(_updateDataList)then{
+        if(!isnil "_updateDataList")then{
+			private _object = _updateDataList;
+			private _dataList =_object getVariable "jna_dataList";
             _dataList set [_index, [_dataList select _index, [_item, _amount]] call jn_fnc_common_array_add];
             _object setVariable ["jna_dataList", _dataList];
         };
@@ -1012,13 +1011,15 @@ switch _mode do {
 
     ///////////////////////////////////////////////////////////////////////////////////////////  GLOBAL
     case "UpdateItemRemove":{
-        params ["_index","_item","_amount",["_updateDataList",false]];
+        params ["_index","_item","_amount",["_updateDataList",nil]];
 
         private _object = UINamespace getVariable "jn_object";
         private _dataList =_object getVariable "jna_dataList";
 
         //update datalist
-        if(_updateDataList)then{
+        if(!isnil "_updateDataList")then{
+			private _object = _updateDataList;
+			private _dataList =_object getVariable "jna_dataList";
             _dataList set [_index, [_dataList select _index, [_item, _amount]] call jn_fnc_common_array_remove];
             _object setVariable ["jna_dataList", _dataList];
         };
@@ -1999,18 +2000,7 @@ switch _mode do {
     case "buttonInvToJNA": {
         //_display = _this select 0;
         private _object = UINamespace getVariable "jn_object";
-        private _array = _object call jn_fnc_arsenal_cargoToArray;
-
-        diag_log str ["Test: ",_array];
-
-        //clear cargo
-        clearMagazineCargoGlobal _object;
-        clearItemCargoGlobal _object;
-        clearweaponCargoGlobal _object;
-        clearbackpackCargoGlobal _object;
-
-        //update server
-        [_object,_array] remoteExec ["jn_fnc_arsenal_cargoToArsenal",2];
+		[_object,_object] call jn_fnc_arsenal_cargoToArsenal;
     };
 
     ///////////////////////////////////////////////////////////////////////////////////////////

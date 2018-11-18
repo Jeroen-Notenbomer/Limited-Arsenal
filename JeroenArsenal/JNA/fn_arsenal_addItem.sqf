@@ -1,4 +1,3 @@
-
 #include "\A3\ui_f\hpp\defineDIKCodes.inc"
 #include "\A3\Ui_f\hpp\defineResinclDesign.inc"
 
@@ -30,7 +29,7 @@ if(typeName (_this select 1) isEqualTo "SCALAR")then{//[_index, _item] and [_ind
 			//update
 			private _playersInArsenal = +(_object getVariable ["jna_playersInArsenal",[]]);
 			if!(0 in _playersInArsenal)then{_playersInArsenal pushBackUnique 2;};
-			["UpdateItemAdd",[_index, _item, _amount,true]] remoteExecCall ["jn_fnc_arsenal",_playersInArsenal];
+			["UpdateItemAdd",[_index, _item, _amount,_object]] remoteExecCall ["jn_fnc_arsenal",_playersInArsenal];
 
 		};
 	} forEach _x;

@@ -3,8 +3,8 @@ if(!isserver)exitWith{};
 params ["_data","_index","_object"];
 
 private _name = _data select 0;
-private _jng_vehicleList = _object getVariable "jng_vehicleList";
-private _array = _jng_vehicleList select _index;
+private _vehicleLists = _object getVariable "jng_vehicleLists";
+private _vehicleList = _vehicleLists select _index;
 
 private _nr = 1;
 private _newName = (_name + " nr:"+ str _nr);
@@ -17,7 +17,7 @@ private _nameExist = {
 		if(_newName isEqualTo _nameCheck)exitWith{
 			_return = true;
 		};
-	} forEach _array;
+	} forEach _vehicleList;
 	_return
 };
 
@@ -30,10 +30,9 @@ while {call _nameExist} do {
 //update name and save
 _data set [0, _newName];
 
-_array pushback _data;
-_jng_vehicleList set [_index,_array];
-diag_log str [_object,"jng_vehicleList"];
-_object setVariable ["jng_vehicleList",_jng_vehicleList];
+_vehicleList pushback _data;
+_vehicleLists set [_index,_vehicleList];
+_object setVariable ["jng_vehicleLists",_vehicleLists];
 
 
 //update all clients that are looking in the garage

@@ -1,8 +1,8 @@
-
 class JN {
 	class Common {
 		file = "JeroenArsenal\Common";
 		class common_addActionSelect {};
+		class common_addActionCancel {};
 	};
 	class Common_Array {
 		file = "JeroenArsenal\Common\array";
@@ -14,6 +14,7 @@ class JN {
 		class arsenal {};
 		class arsenal_addItem {};
 		class arsenal_cargoToArray {};
+		class arsenal_arrayToArsenal {};
 		class arsenal_cargoToArsenal {};
 		class arsenal_container {};
 		class arsenal_init {};
@@ -42,27 +43,49 @@ class JN {
 		class garage_updatePoints {};
 	};
 	
-	class JNG_Fuel {
-		file = "JeroenArsenal\JNG\Fuel";
-		class garage_fuel_consumsion_init {};
-		class garage_fuel_consumsion_start {};
-		class garage_fuel_consumsion_stop {};
-		class garage_fuel_refuel {};
-		//class garage_fuel_defuel {};
-		class garage_fuel_addActionRefuel {};
+	class Fuel {
+		file = "JeroenArsenal\Fuel";
+		class fuel_consumption_init {};
+		class fuel_consumption_start {};
+		class fuel_consumption_stop {};
+		class fuel_refuel {};
+		class fuel_refuel2 {};
+		class fuel_addActionRefuel {};
+		class fuel_get {};
+		class fuel_set {};
+		class fuel_getCapacity {};
+		class fuel_setCapacity {};
+		class fuel_getCargo {};
+		class fuel_setCargo {};
+		class fuel_getCargoCapacity {};
+		class fuel_setCargoCapacity {};
 	};
 	
-	class JNG_Rearm {
-		file = "JeroenArsenal\JNG\Rearm";
-		class garage_rearm_getLoadoutCfg {};
-		class garage_rearm_getLoadoutCurrent {};
-		class garage_rearm_getLoadoutMissing {};
-		class garage_rearm_getLoadoutCost {};
-		class garage_rearm_getCost {};
+	class Ammo {
+		file = "JeroenArsenal\Ammo";
+		class ammo_getLoadoutCfg {};
+		class ammo_getLoadoutCurrent {};
+		class ammo_getLoadoutMissing {};
+		class ammo_getLoadoutCost {};
+		class ammo_getPylonLoadoutMissing {};
+		class ammo_addActionRearm {};
+		class ammo_rearm {};
+		class ammo_getCost {};
+		class ammo_getCargo {};
+		class ammo_setCargo {};
+		class ammo_getCargoCapacity {};
+		class ammo_setCargoCapacity {};
 	};
 	
-	class JNG_Repair {
-		file = "JeroenArsenal\JNG\Repair";
+	class Repair {
+		file = "JeroenArsenal\Repair";
+		class repair_addActionRepair {};
+		class repair_repair {};
+		class repair_removeCargo {};
+		class repair_getCargo {};
+		class repair_setCargo {};
+		class repair_getCargoCapacity {};
+		class repair_setCargoCapacity {};
 		
 	};
 	

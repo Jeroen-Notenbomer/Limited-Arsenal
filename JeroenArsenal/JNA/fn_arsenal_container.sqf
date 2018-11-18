@@ -790,7 +790,7 @@ switch _mode do {
 		private _object = UINamespace getVariable "jn_object";
 		private _object_selected = uiNamespace getVariable "jn_object_selected";
 
-		[_object,jnva_loadout] remoteExec ["jn_fnc_arsenal_cargoToArsenal",2];
+		[_object,jnva_loadout] remoteExec ["jn_fnc_arsenal_arrayToArsenal",2];
 
 		//clean list
 		jnva_loadout_mass = 0;

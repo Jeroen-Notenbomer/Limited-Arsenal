@@ -1,3 +1,5 @@
+#include "defineCommon.inc"
+
 /*
 	Author: Jeroen Notenbomer
 
@@ -12,7 +14,7 @@
 	Usage: No use for end user, use  garage_init instead
 	
 */
-#include "defineCommon.inc"
+
 
 disableserialization;
 
@@ -357,7 +359,7 @@ switch _mode do {
 	case "CreateListsLeft":{
 		_display =  _this select 0;
         private _object = UINamespace getVariable "jn_object";
-        private _jng_vehicleList = _object getVariable "jng_vehicleList";
+        private _vehicleLists = _object getVariable "jng_vehicleLists";
 		
 		//loop all vehicle types
 		{
@@ -378,7 +380,7 @@ switch _mode do {
 			//Deselect
 			_ctrlList lbSetCurSel -1;
 
-		} forEach _jng_vehicleList;
+		} forEach _vehicleLists;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////////// GLOBAL
@@ -1789,13 +1791,13 @@ switch _mode do {
 			[_center,_attachment, false,false] call jn_fnc_logistics_load;
 		};
 
-		//Load fuel and fuelcargo by Stef
-		private _maxFuel = getNumber (configfile >> "CfgVehicles" >> _type >> "fuelCapacity");
-		_center	setfuel (_fuel/_maxFuel);
+		//Load fuel and fuelcargo
+		[_center, _fuelCap] 		call JN_fnc_fuel_setCapacity;//must be done before setting fuel value
+		[_center, _fuel] 			call JN_fnc_fuel_set;
+		if(_fuelcargoCap > 0)then{
+			[_center,_fuelcargoCap,_fuelcargo] call jn_fnc_fuel_addActionRefuel;
+		};
 		
-		//TODO if(activeACE) then {[_center, _fuelcargo] call ace_refuel_fnc_setFuel;} else {_center setfuelcargo _fuelcargo};
-
-
 		_center//return
 	};
 
