@@ -1,6 +1,8 @@
+#include "defineCommon.inc"
+
 params["_objectFrom","_objectTo"];
 
-private _array = _objectFrom call jn_fnc_arsenal_cargoToArray;
+pr _array = _objectFrom call jn_fnc_arsenal_cargoToArray;
 
 //clear cargo
 clearMagazineCargoGlobal _objectFrom;

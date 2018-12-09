@@ -1,19 +1,21 @@
+#include "defineCommon.inc"
+
 params["_vehicle"];
-private _turretsArrayName = [typeof _vehicle, true] call BIS_fnc_allTurrets;
-private _turretCfgs = ([_vehicle] call BIS_fnc_getTurrets);
+pr _turretsArrayName = [typeof _vehicle, true] call BIS_fnc_allTurrets;
+pr _turretCfgs = ([_vehicle] call BIS_fnc_getTurrets);
 if(count _turretsArrayName != count _turretCfgs)then{	_turretsArrayName = [[-1]] + _turretsArrayName;};//add driver
-private _turrets = [];
-private _totalLoadout = [];
+pr _turrets = [];
+pr _totalLoadout = [];
 
 {
-	private _turretLoadout = [];
+	pr _turretLoadout = [];
 	_x params ["_cfgTurret"];
-	private _magazineArray = getArray (_cfgTurret >> "magazines");
+	pr _magazineArray = getArray (_cfgTurret >> "magazines");
 	
 	{
 		_x params["_magClass"];
-		private _ammoCount = getNumber(configfile >> "CfgMagazines" >> _magClass >> "count");
-		private _inserted = false;
+		pr _ammoCount = getNumber(configfile >> "CfgMagazines" >> _magClass >> "count");
+		pr _inserted = false;
 		{
 			_x params ["_magClassList","_ammoCountList"];
 			if(_magClassList isEqualTo _magClass) then
@@ -34,4 +36,9 @@ private _totalLoadout = [];
 	};
 } forEach _turretCfgs;
 
-[_turrets,_totalLoadout];
+_pylonLoadout = [];
+{
+	_pylonLoadout pushBack [_x, getNumber(configfile >> "CfgMagazines" >> _x >> "count")]
+}forEach (getPylonMagazines _vehicle);
+
+[_turrets,_totalLoadout,_pylonLoadout];

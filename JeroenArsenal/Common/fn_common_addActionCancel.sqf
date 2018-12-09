@@ -1,20 +1,20 @@
 #include "defineCommon.inc"
 
 
-params ["_script",{}];
+params ["_object",["_script",{}]];
 
-private _id = player addAction [
+pr _actionId = _object addAction [
 	"place holder",
 	{
-		private _script = _this select 3 select 0;
+		params ["_target", "_caller", "_actionId", "_arguments"];
+		pr _script = _arguments;
 		
-		private _id = _this select 2;
-		player removeAction _id;
-		player setVariable ["jn_cancelAction_id",nil];
+		_target removeAction _actionId;
+		_target setVariable ["jn_cancelAction_id",nil];
 		
 		call _script;
 	},
-	[_script],
+	_script,
 	7, 
 	true,
 	false,
@@ -23,6 +23,6 @@ private _id = player addAction [
 
 ];
 
-player setVariable ["jn_cancelAction_id",_id];
+_object setVariable ["jn_cancelAction_id",_actionId];
 
-call JN_fnc_common_updateActionCancel;
+[player,""] call JN_fnc_common_updateActionCancel;

@@ -1,10 +1,12 @@
+#include "defineCommon.inc"
+
 params[["_vehicle",objNull,[objNull]]];
 
-private _turrets = [];
-private _totalLoadout = [];
-private _magDetail = magazinesAllTurrets _vehicle;
+pr _turrets = [];
+pr _totalLoadout = [];
+pr _magDetail = magazinesAllTurrets _vehicle;
 
-private "_turretLoadout";
+pr "_turretLoadout";
 {
 	_x params ["_magClass","_turretPath","_ammoCount"];
 	if!(_turretPath in _turrets)then{
@@ -13,7 +15,7 @@ private "_turretLoadout";
 		_turretLoadout = [];
 	};
 
-	private _inserted = false;
+	pr _inserted = false;
 	{
 		_x params ["_magClassList","_ammoCountList"];
 		if(_magClassList isEqualTo _magClass) then
@@ -32,6 +34,12 @@ private "_turretLoadout";
 
 _totalLoadout pushBack _turretLoadout;
 
-[_turrets,_totalLoadout];
+_pylonLoadout = [];
+{
+	_pylonLoadout pushBack [_x,_vehicle ammoOnPylon (_forEachIndex + 1)]
+}forEach (getPylonMagazines _vehicle);
+
+
+[_turrets,_totalLoadout,_pylonLoadout];
 
 

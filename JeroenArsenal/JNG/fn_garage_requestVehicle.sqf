@@ -1,22 +1,23 @@
+#include "defineCommon.inc"
 
 if(!isserver)exitWith{};
 
 params["_name","_index","_namePlayer","_uid","_id","_object"];
 
-private _vehicleLists = _object getVariable "jng_vehicleLists";
-private _vehicleList = (_vehicleLists select _index);
+pr _vehicleLists = _object getVariable "jng_vehicleLists";
+pr _vehicleList = (_vehicleLists select _index);
 diag_log "test1";
 diag_log _vehicleList;
 
-private _activePlayers = [];
+pr _activePlayers = [];
 {
 	_activePlayers pushBack (name _x); false;
 } count (allPlayers - entities "HeadlessClient_F");
 
 
-private _message = false;
+pr _message = false;
 {//forEach _array
-	private _data = _x;
+	pr _data = _x;
 	_data params ["_name2", "_beingChanged2"];
 	
 	if(_name2 isEqualTo _name)exitWith{

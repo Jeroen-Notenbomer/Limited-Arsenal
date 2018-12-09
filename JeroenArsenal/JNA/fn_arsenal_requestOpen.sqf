@@ -1,3 +1,5 @@
+#include "defineCommon.inc"
+
 /*
 	Author: Jeroen Notenbomer
 
@@ -14,10 +16,10 @@
 if(!isServer)exitWith{};
 params ["_clientOwner","_object"];
 
- private _temp = _object getVariable ["jna_playersInArsenal",[]];
+ pr _temp = _object getVariable ["jna_playersInArsenal",[]];
 _temp pushBackUnique _clientOwner;
 _object setVariable ["jna_playersInArsenal",_temp,true];
 
 diag_log ["open arsenal for: clientOwner ",_clientOwner];
-["Open"] remoteExecCall ["jn_fnc_arsenal", _clientOwner];
+["Open",_object] remoteExecCall ["jn_fnc_arsenal", _clientOwner];
 

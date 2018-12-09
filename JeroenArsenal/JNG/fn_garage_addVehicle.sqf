@@ -1,16 +1,18 @@
+#include "defineCommon.inc"
+
 if(!isserver)exitWith{};
 
 params ["_data","_index","_object"];
 
-private _name = _data select 0;
-private _vehicleLists = _object getVariable "jng_vehicleLists";
-private _vehicleList = _vehicleLists select _index;
+pr _name = _data select 0;
+pr _vehicleLists = _object getVariable "jng_vehicleLists";
+pr _vehicleList = _vehicleLists select _index;
 
-private _nr = 1;
-private _newName = (_name + " nr:"+ str _nr);
+pr _nr = 1;
+pr _newName = (_name + " nr:"+ str _nr);
 
 //check if name is already in the list
-private _nameExist = {
+pr _nameExist = {
 	_return = false;
 	{
 		_nameCheck = _x select 0;
@@ -36,7 +38,7 @@ _object setVariable ["jng_vehicleLists",_vehicleLists];
 
 
 //update all clients that are looking in the garage
-private _clients = missionnamespace getVariable ["jng_playersInGarage",[]];
+pr _clients = missionnamespace getVariable ["jng_playersInGarage",[]];
 if!(_clients isEqualTo [])then{
 	["addVehicle",[_data,_index]] remoteExecCall ["jn_fnc_garage",_clients];
 };

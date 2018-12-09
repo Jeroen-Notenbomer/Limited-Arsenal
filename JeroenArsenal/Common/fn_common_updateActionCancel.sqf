@@ -1,8 +1,10 @@
-params["_text",""];
+#include "defineCommon.inc"
 
-_id = player getVariable "jn_cancelAction_id";
+params["_object",["_text",""]];
+
+pr _id = _object getVariable "jn_cancelAction_id";
 
 if(isnil "_id")exitWith{};
 
-player setUserActionText [_id,  format["<t color='#FFA500'>%1 (%2)",localize "STR_JNC_ACT_CANCEL",_text]];
+_object setUserActionText [_id,  format["<t color='#FFA500'>%1 %2",localize "STR_JNC_ACT_CANCEL",_text]];
 

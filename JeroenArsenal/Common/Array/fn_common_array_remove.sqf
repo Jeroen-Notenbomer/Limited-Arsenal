@@ -1,3 +1,5 @@
+#include "defineCommon.inc"
+
 /*
     By: Jeroen Notenbomer
 
@@ -23,16 +25,16 @@ diag_log _list;
 diag_log "2";
 diag_log _remove;
 {
-    private _index = _forEachIndex;
-    private _name = _x select 0;
-    private _amount = _x select 1;
+    pr _index = _forEachIndex;
+    pr _name = _x select 0;
+    pr _amount = _x select 1;
 
     if!(_name isEqualTo "")then{//skip items with no nam
         {
 			if!(_x isEqualTo -1)then{
-				private _index2 = _forEachIndex;
-				private _name2 = _x select 0;
-				private _amount2 = _x select 1;
+				pr _index2 = _forEachIndex;
+				pr _name2 = _x select 0;
+				pr _amount2 = _x select 1;
 
 				if(_name isEqualTo _name2)exitWith{
 
@@ -41,7 +43,7 @@ diag_log _remove;
 							_list set [_forEachIndex, -1]; //remove unlimited item
 						};
 					}else{
-						private _newAmount = (_amount2 - _amount);
+						pr _newAmount = (_amount2 - _amount);
 						if(_newAmount > 0)then{
 							_list set [_forEachIndex, [_name, _newAmount]];
 						}else{

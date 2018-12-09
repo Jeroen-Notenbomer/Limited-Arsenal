@@ -1,17 +1,19 @@
+#include "defineCommon.inc"
+
 params["_vehicle"];
 
-private _loadoutCfg = _vehicle call JN_fnc_ammo_getLoadoutCfg; 
-private _loadoutCurrent = _vehicle call JN_fnc_ammo_getLoadoutCurrent;
-private _loadoutMissing = [];
-private _turrets = [];
+pr _loadoutCfg = _vehicle call JN_fnc_ammo_getLoadoutCfg; 
+pr _loadoutCurrent = _vehicle call JN_fnc_ammo_getLoadoutCurrent;
+pr _loadoutMissing = [];
+pr _turrets = [];
 {
-	private _turret = _x;
-	private _loadoutCurrentIndex = _forEachIndex;
+	pr _turret = _x;
+	pr _loadoutCurrentIndex = _forEachIndex;
 	{
 
 		if(_turret isEqualTo _x)exitWith{
 
-			private _missing = [
+			pr _missing = [
 				(_loadoutCfg select 1 select _forEachIndex),
 				(_loadoutCurrent select 1 select _loadoutCurrentIndex)
 			] call jn_fnc_common_array_remove;

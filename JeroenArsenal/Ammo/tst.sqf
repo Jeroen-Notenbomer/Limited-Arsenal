@@ -1,14 +1,16 @@
+#include "defineCommon.inc"
+
 _vehicle = cursorObject;
 
 _missingAmmoTurrets = _vehicle call JN_fnc_ammo_getLoadoutMissing;
 
 _costTotal = [];
 {
-	private _missingAmmoTurret = _x;
-	private _cost = 0;
+	pr _missingAmmoTurret = _x;
+	pr _cost = 0;
 	{
 		_x params ["_magClass","_amount"];
-		private _ammoClass = getText(configfile >> "CfgMagazines" >> _magClass >> "ammo");
+		pr _ammoClass = getText(configfile >> "CfgMagazines" >> _magClass >> "ammo");
 		_cost = _cost + (getNumber (configfile >> "CfgAmmo" >> _ammoClass >> "cost") * _amount); 
 		
 	}forEach _missingAmmoTurret;

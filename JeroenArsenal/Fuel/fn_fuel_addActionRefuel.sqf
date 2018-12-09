@@ -22,35 +22,40 @@ params["_vehicle","_fuelCargoCapacity",["_fuelCargo",0]];
 //check if it already has a action
 if !isnil(_vehicle getVariable "refuelAction_id")exitWith{diag_log ("JN_fuel already init for object: "+str _vehicle)};
 
-private _id = _vehicle addaction [
+pr _id = _vehicle addaction [
 	"place holder",
 	{
-		private _vehicle = _this select 0;
+		pr _vehicle = _this select 0;
 		diag_log ["test1",_vehicle];
 		//check if object has still fuel
-		private _fuelCargo = _vehicle getVariable ["jn_fuel_cargo",0];
+		pr _fuelCargo = _vehicle getVariable ["jn_fuel_cargo",0];
 		if(_fuelCargo == 0)exitWith{hint "No fuel in object"};
 		
 		//create select action
-		private _script =  {
+		pr _script =  {
 			params ["_vehicle"];
-			private _vehicle2 = cursorObject;
-			[_vehicle2,_vehicle] call jn_fnc_fuel_refuel2;
+			pr _vehicle2 = cursorObject;
+			[_vehicle2,_vehicle] call jn_fnc_fuel_refuel;
 		};
 		
-		private _conditions = {
+		pr _conditionActive = {
+			params ["_vehicle"];
+			alive player;
+		};
+		
+		pr _conditionColor = {
 			params ["_vehicle"];
 			!isnull cursorObject&&{_vehicle distance cursorObject < INT_MAX_DISTANCE_TO_REFUEL}
 		};
 					
-		[_script,_conditions,_vehicle] call jn_fnc_common_addActionSelect;
+		[_script,_conditionActive,_conditionColor,_vehicle] call jn_fnc_common_addActionSelect;
 	},
 	[],
 	4,
 	true,
 	false,
 	"",
-	"alive _target && {_target distance _this < 5} && {player == vehicle player}"
+	"alive _target && {_target distance _this < 5} && {player == vehicle player} && {isNil {_target getVariable 'refuelAction_inUse'}}"
 		
 ];
 _vehicle setVariable ["refuelAction_id",_id];

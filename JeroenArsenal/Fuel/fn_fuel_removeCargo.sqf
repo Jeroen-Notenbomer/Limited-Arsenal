@@ -1,6 +1,8 @@
+#include "defineCommon.inc"
+
 params["_vehicle","_amount"];
 
-private _cargo = _vehicle call JN_fnc_fuel_getCargo;
+pr _cargo = _vehicle call JN_fnc_fuel_getCargo;
 _cargo = _cargo - _amount;
 if(_cargo < 0)exitWith{false};//return failure
 

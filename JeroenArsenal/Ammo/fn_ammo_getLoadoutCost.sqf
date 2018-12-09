@@ -1,3 +1,5 @@
+#include "defineCommon.inc"
+
 /*
 	Author: Jeroen Notenbomer
 
@@ -15,12 +17,12 @@
 
 params ["_vehicle"];
 
-private _missingAmmoTurrets = _vehicle call JN_fnc_ammo_getLoadoutMissing;
+pr _missingAmmoTurrets = _vehicle call JN_fnc_ammo_getLoadoutMissing;
 
-private _turretCost = [];
+pr _turretCost = [];
 {
-	private _missingAmmoTurret = _x;
-	private _cost = 0;
+	pr _missingAmmoTurret = _x;
+	pr _cost = 0;
 	{
 		_x params ["_magClass","_amount"];
 		_cost = _cost + (([_magClass] call JN_fnc_ammo_getCost) * _amount);
@@ -29,7 +31,7 @@ private _turretCost = [];
 	_turretCost pushBack _cost;
 }forEach (_missingAmmoTurrets select 1);
 
-private _pylonCost = [];
+pr _pylonCost = [];
 {
 	_x params ["_magClass","_amount"];
 	_pylonCost pushback (([_magClass] call JN_fnc_ammo_getCost) * _amount);

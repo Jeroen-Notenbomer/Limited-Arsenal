@@ -1,3 +1,4 @@
+#include "defineCommon.inc"
 /*
 	Author: Jeroen Notenbomer
 
@@ -15,7 +16,7 @@
 if(!isServer)exitWith{};
 params ["_clientOwner","_object"];
 
- private _temp = _object getVariable ["jng_playersInGarage",[]];
+ pr _temp = _object getVariable ["jng_playersInGarage",[]];
 _temp pushBackUnique _clientOwner;
 _object setVariable ["jng_playersInGarage",_temp,true];
 

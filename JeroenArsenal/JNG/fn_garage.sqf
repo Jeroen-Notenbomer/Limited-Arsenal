@@ -72,15 +72,15 @@ switch _mode do {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "MouseZChanged": {
 
-		private _cam = (uinamespace getvariable ["BIS_fnc_arsenal_cam",objnull]);
-		private _center = (missionnamespace getvariable ["JNG_CENTER",objnull]);
-		private _target = (missionnamespace getvariable ["BIS_fnc_arsenal_target",objnull]);
-		private _camPos = (uinamespace getvariable ["BIS_fnc_arsenal_campos",objnull]); //[5,-180.171,31.4394,[-0.151687,-0.000455028,0.169312]]
+		pr _cam = (uinamespace getvariable ["BIS_fnc_arsenal_cam",objnull]);
+		pr _center = (missionnamespace getvariable ["JNG_CENTER",objnull]);
+		pr _target = (missionnamespace getvariable ["BIS_fnc_arsenal_target",objnull]);
+		pr _camPos = (uinamespace getvariable ["BIS_fnc_arsenal_campos",objnull]); //[5,-180.171,31.4394,[-0.151687,-0.000455028,0.169312]]
 
-		private _disMax = ((boundingboxreal _center select 0) vectordistance (boundingboxreal _center select 1)) * 1.5;
-		private _disMin = _disMax * 0.15;
-		private _z = _this select 1;
-		private _dis = _camPos select 0;
+		pr _disMax = ((boundingboxreal _center select 0) vectordistance (boundingboxreal _center select 1)) * 1.5;
+		pr _disMin = _disMax * 0.15;
+		pr _z = _this select 1;
+		pr _dis = _camPos select 0;
 		_dis = _dis - (_z / 10);
 		_dis = _dis max _disMin min _disMax;
 		_camPos set [0,_dis];
@@ -251,7 +251,7 @@ switch _mode do {
 		_posSort = ctrlPosition _ctrlSort;
 		_posList = ctrlPosition _ctrlList;
 		{
-			private _ctrlList = _display displayctrl(IDC_RSCDISPLAYARSENAL_LIST + _x);
+			pr _ctrlList = _display displayctrl(IDC_RSCDISPLAYARSENAL_LIST + _x);
 			_ctrlList ctrlSetPosition _posList;
 		} forEach [IDCS_RIGHT];
 		//move list down a bit so new sort box fits
@@ -346,7 +346,7 @@ switch _mode do {
 	/////////////////////////////////////////////////////////////////////////////////////////// Externaly called
 	case "Open":{
 		diag_log "JNG open arsenal(yes we open bis arsenal not garage)";
-		private _object = UINamespace getVariable "jn_object";
+		pr _object = UINamespace getVariable "jn_object";
         ["Open",[nil,_object,player,false]] call bis_fnc_arsenal;
 	};
 
@@ -358,8 +358,8 @@ switch _mode do {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "CreateListsLeft":{
 		_display =  _this select 0;
-        private _object = UINamespace getVariable "jn_object";
-        private _vehicleLists = _object getVariable "jng_vehicleLists";
+        pr _object = UINamespace getVariable "jn_object";
+        pr _vehicleLists = _object getVariable "jng_vehicleLists";
 		
 		//loop all vehicle types
 		{
@@ -418,9 +418,9 @@ switch _mode do {
 		SPLIT_SAVE
 		_name2 = _name;
 
-		private _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
+		pr _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
 		for "_l" from 0 to (lbsize _ctrlList - 1) do {
-			private _datastr = _ctrlList lbdata _l;
+			pr _datastr = _ctrlList lbdata _l;
 			DECOMPILE_DATA
 			SPLIT_SAVE
 			if(_name isEqualTo _name2)exitWith{
@@ -433,8 +433,8 @@ switch _mode do {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "UpdateItemColor":{
 		params["_display","_index","_l"];
-		private _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
-		private _dataStr = _ctrlList lbdata _l;
+		pr _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
+		pr _dataStr = _ctrlList lbdata _l;
 
 		DECOMPILE_DATA
 		SPLIT_SAVE
@@ -443,7 +443,7 @@ switch _mode do {
 
 		if(!isMultiplayer)exitWith{};
 
-		private _isActive = {_beingChanged isEqualTo (name _x)} count (allPlayers - entities "HeadlessClient_F") > 0;
+		pr _isActive = {_beingChanged isEqualTo (name _x)} count (allPlayers - entities "HeadlessClient_F") > 0;
 
 		if( !_isActive || _beingChanged isEqualTo (name player))then{
 			if(_locked isEqualTo (getPlayerUID player))then{
@@ -528,27 +528,27 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
 	case "SelectItem":{
-		private _display = _this select 0;
-		private _ctrlList = _this select 1;
-		private _index = _this select 2;
+		pr _display = _this select 0;
+		pr _ctrlList = _this select 1;
+		pr _index = _this select 2;
 		
-		private _center = missionnamespace getvariable "JNG_CENTER";
-		private _indexLeft = _center call jn_fnc_garage_getVehicleIndex;
-		private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft); 
+		pr _center = missionnamespace getvariable "JNG_CENTER";
+		pr _indexLeft = _center call jn_fnc_common_vehicle_getVehicleType;
+		pr _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft); 
 
 
-		private _cursel = lbcursel _ctrlList;
-		private _curselLeft = lbcursel _ctrlListLeft;
-		private _type = (ctrltype _ctrlList == 102);
-		private _center = (missionnamespace getvariable ["JNG_CENTER",player]);
-		private _checkboxTextures = [
+		pr _cursel = lbcursel _ctrlList;
+		pr _curselLeft = lbcursel _ctrlListLeft;
+		pr _type = (ctrltype _ctrlList == 102);
+		pr _center = (missionnamespace getvariable ["JNG_CENTER",player]);
+		pr _checkboxTextures = [
 			tolower gettext (configfile >> "RscCheckBox" >> "textureUnchecked"),
 			tolower gettext (configfile >> "RscCheckBox" >> "textureChecked")
 		];
 
-		private _dataStr = if _type then{_ctrlList lnbData [_cursel,0]}else{_ctrlList lbdata _cursel};
+		pr _dataStr = if _type then{_ctrlList lnbData [_cursel,0]}else{_ctrlList lbdata _cursel};
 
-		private _initVehicle = false;
+		pr _initVehicle = false;
 		switch _index do {
 			case IDC_JNG_TAB_CAR;
 			case IDC_JNG_TAB_ARMOR;
@@ -582,7 +582,7 @@ switch _mode do {
 					_attachItemNew = _data;//save _data so we can update vehicle data later
 
 					//add new
-					private _attachment = ["CreateVehicle",[_data,true,[0,0,0]]] call jn_fnc_garage;
+					pr _attachment = ["CreateVehicle",[_data,true,[0,0,0]]] call jn_fnc_garage;
 					[_center,_attachment, false,false] call jn_fnc_logistics_load;
 				};
 
@@ -593,11 +593,11 @@ switch _mode do {
 				_ctrlList lbsetpicture [_cursel,_checkboxTextures select 1];
 
 				//get selected ctrl on the left
-				private _indexLeft = _center call jn_fnc_garage_getVehicleIndex;
-				private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft);
+				pr _indexLeft = _center call jn_fnc_common_vehicle_getVehicleType;
+				pr _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft);
 
 				//load vehicle
-				private _datastr = _ctrlListLeft lbdata _curselLeft;
+				pr _datastr = _ctrlListLeft lbdata _curselLeft;
 				DECOMPILE_DATA
 				SPLIT_SAVE
 
@@ -611,16 +611,16 @@ switch _mode do {
 			};
 			case IDC_JNG_TAB_PYLON: {
 				DECOMPILE_DATA
-				private _item = _data select 0;
-				private _idPylon = _data select 1;
+				pr _item = _data select 0;
+				pr _idPylon = _data select 1;
 
 				
 				//get selected ctrl on the left
-				private _index = _center call jn_fnc_garage_getVehicleIndex;
-				private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
+				pr _index = _center call jn_fnc_common_vehicle_getVehicleType;
+				pr _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
 				
 				//load vehicle data
-				private _datastr = _ctrlListLeft lbdata _curselLeft;
+				pr _datastr = _ctrlListLeft lbdata _curselLeft;
 				DECOMPILE_DATA
 				SPLIT_SAVE
 
@@ -761,14 +761,14 @@ switch _mode do {
 	case "TabSelectRight": {
 		//if(JNG_CENTER isEqualTo player)exitWith{};
 
-		private _display = _this select 0;
-		private _index = _this select 1;
-		private _ctrlList = _display displayctrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
-		private _ctrlTab = _display displayctrl (IDC_RSCDISPLAYARSENAL_TAB + _index);
-		private _type = (ctrltype _ctrlList == 102);
+		pr _display = _this select 0;
+		pr _index = _this select 1;
+		pr _ctrlList = _display displayctrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
+		pr _ctrlTab = _display displayctrl (IDC_RSCDISPLAYARSENAL_TAB + _index);
+		pr _type = (ctrltype _ctrlList == 102);
 
-		private _ctrFrameRight = _display displayctrl IDC_RSCDISPLAYARSENAL_FRAMERIGHT;
-		private _ctrBackgroundRight = _display displayctrl IDC_RSCDISPLAYARSENAL_BACKGROUNDRIGHT;
+		pr _ctrFrameRight = _display displayctrl IDC_RSCDISPLAYARSENAL_FRAMERIGHT;
+		pr _ctrBackgroundRight = _display displayctrl IDC_RSCDISPLAYARSENAL_BACKGROUNDRIGHT;
 
 		{
 			_idc = _x;
@@ -777,7 +777,7 @@ switch _mode do {
 
 			//show tabs
 			if(_idc != IDC_JNG_TAB_HARDPOINT)then{
-				private _ctrlTab = _display displayctrl (IDC_RSCDISPLAYARSENAL_TAB + _idc);
+				pr _ctrlTab = _display displayctrl (IDC_RSCDISPLAYARSENAL_TAB + _idc);
 				_ctrlTab ctrlenable true;
 				_ctrlTab ctrlShow true;
 				_ctrlTab ctrlsetfade ([1,0] select true);
@@ -799,8 +799,8 @@ switch _mode do {
 			if(_active)then{
 
 				//enable sort for rearm
-				private _isRearm = (_index == IDC_JNG_TAB_REARM);
-				private _ctrlSort = _display displayctrl (IDC_RSCDISPLAYARSENAL_SORT + IDC_JNG_TAB_REARM_SORT);
+				pr _isRearm = (_index == IDC_JNG_TAB_REARM);
+				pr _ctrlSort = _display displayctrl (IDC_RSCDISPLAYARSENAL_SORT + IDC_JNG_TAB_REARM_SORT);
 				_ctrlSort ctrlShow _isRearm;
 				_ctrlSort ctrlEnable _isRearm;
 				_ctrlSort ctrlsetfade ([1,0] select _isRearm);
@@ -884,14 +884,14 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
 	case "SelectPylonIcon":{
-		private _display = _this select 0;
-		private _idPylon = _this select 1;
+		pr _display = _this select 0;
+		pr _idPylon = _this select 1;
 
-		private _center = JNG_CENTER;
-		private _type = typeOf _center;
-		private _cfg = (configfile >> "CfgVehicles" >> _type);
+		pr _center = JNG_CENTER;
+		pr _type = typeOf _center;
+		pr _cfg = (configfile >> "CfgVehicles" >> _type);
 
-		private _icons = missionnamespace getvariable ["JNG_garage_icons",[]];
+		pr _icons = missionnamespace getvariable ["JNG_garage_icons",[]];
 
 		//set color
 		{
@@ -911,7 +911,7 @@ switch _mode do {
 		//add items to list
 		_indexList = if(_idPylon <= 0)then{//Sparkers pylons
 			_idPylon = -_idPylon;
-			private _ctrlList = _display displayctrl (IDC_RSCDISPLAYARSENAL_LIST + IDC_JNG_TAB_HARDPOINT);
+			pr _ctrlList = _display displayctrl (IDC_RSCDISPLAYARSENAL_LIST + IDC_JNG_TAB_HARDPOINT);
 
 			//clear list
 			lbclear _ctrlList;
@@ -937,17 +937,17 @@ switch _mode do {
 
 			//current static
 			call {
-				private _index = _center call jn_fnc_garage_getVehicleIndex;
-				private _ctrllistLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
-				private _datastr = _ctrllistLeft lbdata (lbCurSel _ctrllistLeft);
+				pr _index = _center call jn_fnc_common_vehicle_getVehicleType;
+				pr _ctrllistLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
+				pr _datastr = _ctrllistLeft lbdata (lbCurSel _ctrllistLeft);
 				DECOMPILE_DATA
 				SPLIT_SAVE //vehicle data
 
 				if!(_attachItem isEqualTo [])then{
-					private _data = _attachItem;
+					pr _data = _attachItem;
 					SPLIT_SAVE//attachment data
-					private _lbAdd = _ctrlList lbadd _name;
-					private _dataStr = str _data;
+					pr _lbAdd = _ctrlList lbadd _name;
+					pr _dataStr = str _data;
 					_ctrlList lbsetdata [_lbAdd, _dataStr];
 					_ctrlList lbsetpicture [_lbAdd,tolower gettext (configfile >> "RscCheckBox" >> "textureChecked")];
 				};
@@ -971,7 +971,7 @@ switch _mode do {
 			};
 			IDC_JNG_TAB_HARDPOINT//return
 		}else{//Arma pylons
-			private _ctrlList = _display displayctrl (IDC_RSCDISPLAYARSENAL_LIST + IDC_JNG_TAB_PYLON);
+			pr _ctrlList = _display displayctrl (IDC_RSCDISPLAYARSENAL_LIST + IDC_JNG_TAB_PYLON);
 
 			lnbClear _ctrlList;
 
@@ -1006,7 +1006,7 @@ switch _mode do {
 			_x ctrlcommit FADE_DELAY;
 		} foreach [_ctrFrameRight,_ctrBackgroundRight];
 		{
-			private _index = _x;
+			pr _index = _x;
 			_active = (_indexList == _index);
 			{
 				_ctrlList = _display displayctrl (_x + _index);
@@ -1022,21 +1022,21 @@ switch _mode do {
 	case "SelectRepairIcon":{
 		params["_display","_ctrlIcon","_damageID","_costNodeW"];
 		
-		private _center = missionnamespace getvariable "JNG_CENTER";
-		private _indexLeft = _center call jn_fnc_garage_getVehicleIndex;
-		private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft); 
-		private _object = UINamespace getVariable "jn_object";
+		pr _center = missionnamespace getvariable "JNG_CENTER";
+		pr _indexLeft = _center call jn_fnc_common_vehicle_getVehicleType;
+		pr _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft); 
+		pr _object = UINamespace getVariable "jn_object";
 		
-		private _repairPoints = _object getVariable ["jng_repairPoints",0];
-		private _amount = _repairPoints - _costNodeW;
+		pr _repairPoints = _object getVariable ["jng_repairPoints",0];
+		pr _amount = _repairPoints - _costNodeW;
 		if(_amount < 0)exitwith{['showMessage',[_display,"To less repair points"]] call jn_fnc_arsenal;};//messsage not enough points TODO
 		
 		_object setVariable ["jng_repairPoints",_amount, true];
 		[_object,_amount, STATTYPE_REPAIR] remoteExecCall ["jn_fnc_garage_updatePoints",2];
 		
 		//load
-		private _cursel = lbCurSel _ctrlListLeft;
-		private _datastr = _ctrlListLeft lbdata _cursel;
+		pr _cursel = lbCurSel _ctrlListLeft;
+		pr _datastr = _ctrlListLeft lbdata _cursel;
 		DECOMPILE_DATA
 		SPLIT_SAVE
 
@@ -1054,18 +1054,18 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
 	case "SelectRearmList":{
-		private _display = _this select 0;
+		pr _display = _this select 0;
 
-		private _ctrlSort = _display displayctrl (IDC_RSCDISPLAYARSENAL_SORT + IDC_JNG_TAB_REARM_SORT);
-		private _cursel = lbCurSel _ctrlSort;
-		private _dataStr = _ctrlSort lbData _cursel; //"[-1]"
+		pr _ctrlSort = _display displayctrl (IDC_RSCDISPLAYARSENAL_SORT + IDC_JNG_TAB_REARM_SORT);
+		pr _cursel = lbCurSel _ctrlSort;
+		pr _dataStr = _ctrlSort lbData _cursel; //"[-1]"
 		diag_log [_ctrlSort,_cursel,_dataStr];
 		DECOMPILE_DATA
 
-		private _turret = _data; //[-1]
-		private _center = missionnamespace getvariable "JNG_CENTER";
-		private _type = typeOf _center;
-		private _cfg = (configfile >> "CfgVehicles" >> _type);
+		pr _turret = _data; //[-1]
+		pr _center = missionnamespace getvariable "JNG_CENTER";
+		pr _type = typeOf _center;
+		pr _cfg = (configfile >> "CfgVehicles" >> _type);
 
 
 		_currentMagazines = magazinesAllTurrets _center;
@@ -1183,16 +1183,16 @@ switch _mode do {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "SelectCurrentCenter":{
 		params ["_display","_center"];
-		private _index = _center call jn_fnc_garage_getVehicleIndex;
-		private _nameCenter = _center getVariable ["jng_name",""];
+		pr _index = _center call jn_fnc_common_vehicle_getVehicleType;
+		pr _nameCenter = _center getVariable ["jng_name",""];
 
 		{
-			private _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _x);
-			private _active = _index == _x;
+			pr _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _x);
+			pr _active = _index == _x;
 
 			if(_active)then{
 				for "_i" from 0 to (lbsize _ctrlList - 1) do {
-					private _datastr = _ctrlList lbdata _i;
+					pr _datastr = _ctrlList lbdata _i;
 					DECOMPILE_DATA
 					SPLIT_SAVE
 					if(_nameCenter isEqualTo _name)exitWith{
@@ -1209,15 +1209,15 @@ switch _mode do {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "Preview":{
 		if!(isnil "jna_preview_This")exitWith{};//inpatient person spamming the button
-		private _display = _this select 0;
-		private _data = _this select 1;
-		private _index = _this select 2;
+		pr _display = _this select 0;
+		pr _data = _this select 1;
+		pr _index = _this select 2;
 		
 		
 		SPLIT_SAVE
 		if (_name isEqualTo (_center getVariable "jng_name"))exitWith{};//player is already changing this
 
-		private _isActive = {_beingChanged isEqualTo (name _x)} count (allPlayers - entities "HeadlessClient_F") > 0;
+		pr _isActive = {_beingChanged isEqualTo (name _x)} count (allPlayers - entities "HeadlessClient_F") > 0;
 
 		if (_isActive && !(_beingChanged isEqualTo (name player))) exitWith{//someone else is changing this
 			["SelectCurrentCenter",[_display,JNG_CENTER]] call jn_fnc_garage;
@@ -1233,10 +1233,10 @@ switch _mode do {
 			//this is called by the server
 			jn_fnc_garage_requestVehicleMessage = {
 				params ["_message"];//server lets us know if we can use vehicle (true/false)
-				private _object = UINamespace getVariable "jn_object";
-				private _display = jna_preview_This select 0;
-				private _data = jna_preview_This select 1;
-				private _index = jna_preview_This select 2;
+				pr _object = UINamespace getVariable "jn_object";
+				pr _display = jna_preview_This select 0;
+				pr _data = jna_preview_This select 1;
+				pr _index = jna_preview_This select 2;
 
 				//message recieved from server no need to close this script after 1 sec anymore
 				terminate jna_handlePreview2;
@@ -1254,12 +1254,12 @@ switch _mode do {
 
 					//tell the server we are not using the old vehicle anymore, first we need to find it back
 					{
-						private _index = _x;
-						private _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
+						pr _index = _x;
+						pr _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
 
-						private _found = false;
+						pr _found = false;
 						for "_i" from 0 to (lbsize _ctrlList - 1) do {
-							private _datastr = _ctrlList lbdata _i;
+							pr _datastr = _ctrlList lbdata _i;
 							DECOMPILE_DATA
 							SPLIT_SAVE
 							if(_name isEqualTo (JNG_CENTER getVariable "jng_name"))exitWith{
@@ -1288,7 +1288,7 @@ switch _mode do {
 					};
 
 					//create new vehicle
-					private _center = ["CreateVehicle",[_data,true]] call jn_fnc_garage;
+					pr _center = ["CreateVehicle",[_data,true]] call jn_fnc_garage;
 					missionnamespace setvariable ["JNG_CENTER",_center];
 
 					//set Rearm tab
@@ -1340,24 +1340,24 @@ switch _mode do {
 					
 					
 					//repair icons
-					private _hitpoints = getAllHitPointsDamage _center;
+					pr _hitpoints = getAllHitPointsDamage _center;
 					_ctrlList = [];
 									
-					private _cfg = (configfile >> "cfgvehicles" >> _type);
-					private _costVehicle = getNumber(_cfg >> "cost");
-					private _costNode = _costVehicle/1000/count _hitpoints; //repair cost per node
+					pr _cfg = (configfile >> "cfgvehicles" >> _type);
+					pr _costVehicle = getNumber(_cfg >> "cost");
+					pr _costNode = _costVehicle/1000/count _hitpoints; //repair cost per node
 					
 					if(count _hitpoints > 0)then{
 						{
-							private _selectionName = _x;
+							pr _selectionName = _x;
 							if!(_selectionName isEqualTo "")then{
-								private _damage = _hitpoints select 2 select _foreachindex;
+								pr _damage = _hitpoints select 2 select _foreachindex;
 								if(_damage == 0)exitWith{};
 								
-								private _costNodeW = round(_damage * _costNode)+1;
+								pr _costNodeW = round(_damage * _costNode)+1;
 								
 								
-								private _ctrl = _display ctrlCreate ["RscButtonArsenal",-1];
+								pr _ctrl = _display ctrlCreate ["RscButtonArsenal",-1];
 								_ctrl ctrlsetposition [0,0,0];
 								_ctrl ctrlSetText "\A3\ui_f\data\IGUI\Cfg\Actions\repair_ca.paa";
 								_ctrl ctrlenable false;
@@ -1368,10 +1368,10 @@ switch _mode do {
 								_ctrl ctrlcommit 0;
 								_ctrl setVariable ["location",_center selectionposition _selectionName];
 								_ctrl ctrladdeventhandler ["buttonclick",format ["
-									private _ctrlIcon =  _this select 0;
-									private _damageID = %1;
-									private _costNodeW = %2;
-									private _display = uiNamespace getVariable 'arsanalDisplay';
+									pr _ctrlIcon =  _this select 0;
+									pr _damageID = %1;
+									pr _costNodeW = %2;
+									pr _display = uiNamespace getVariable 'arsanalDisplay';
 
 									['SelectRepairIcon',[_display,_ctrlIcon,_damageID,_costNodeW]] call jn_fnc_garage;
 								",_foreachindex,_costNodeW]];
@@ -1528,9 +1528,9 @@ switch _mode do {
 			};
 
 			//ask server to lock vehicle for us so others cant access it
-			private _object = UINamespace getVariable "jn_object";
-			private _data = jna_preview_This select 1;
-			private _index = jna_preview_This select 2;
+			pr _object = UINamespace getVariable "jn_object";
+			pr _data = jna_preview_This select 1;
+			pr _index = jna_preview_This select 2;
 			
 			SPLIT_SAVE//get vehicle name
 			[_name, _index, name player, getPlayerUID player, clientOwner,_object] remoteExecCall ["jn_fnc_garage_requestVehicle",2];
@@ -1625,21 +1625,21 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
 	case "buttonClose": {
-		private _display = uiNamespace getVariable "arsanalDisplay";
-		private _object = UINamespace getVariable "jn_object";
+		pr _display = uiNamespace getVariable "arsanalDisplay";
+		pr _object = UINamespace getVariable "jn_object";
 		with missionnamespace do{
 			if( (!isnil "JNG_CENTER") && {!isnull JNG_CENTER} && {JNG_CENTER != player} )then{
-				private _center = JNG_CENTER;
+				pr _center = JNG_CENTER;
 				{
 					_x hideObject true;
 					detach _x;
 					deleteVehicle _x;
 				}foreach attachedObjects _center;
 
-				private _index = _center call jn_fnc_garage_getVehicleIndex;
-				private _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
-				private _cursel = lbCurSel _ctrlList;
-				private _datastr = _ctrlList lbdata _cursel;
+				pr _index = _center call jn_fnc_common_vehicle_getVehicleType;
+				pr _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
+				pr _cursel = lbCurSel _ctrlList;
+				pr _datastr = _ctrlList lbdata _cursel;
 				DECOMPILE_DATA
 				[_data, _index,_object] remoteExecCall ["jn_fnc_garage_releaseVehicle",2];
 				deleteVehicle _center;
@@ -1652,18 +1652,18 @@ switch _mode do {
 
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
 	case "buttonGetVehicle": {
-		private _display = _this select 0;
-		private _center = JNG_CENTER;
-		private _object = UINamespace getVariable "jn_object";
+		pr _display = _this select 0;
+		pr _center = JNG_CENTER;
+		pr _object = UINamespace getVariable "jn_object";
 		
 		if!(_center isEqualTo player)then{
-			private _pos = getpos _center;
+			pr _pos = getpos _center;
 
 			//get current selected vehicle
-			private _indexLeft = _center call jn_fnc_garage_getVehicleIndex;
-			private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft);
-			private _cursel = lbCurSel _ctrlListLeft;
-			private _datastr = _ctrlListLeft lbdata _cursel;
+			pr _indexLeft = _center call jn_fnc_common_vehicle_getVehicleType;
+			pr _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft);
+			pr _cursel = lbCurSel _ctrlListLeft;
+			pr _datastr = _ctrlListLeft lbdata _cursel;
 			DECOMPILE_DATA
 			SPLIT_SAVE
 
@@ -1684,7 +1684,7 @@ switch _mode do {
 			deleteVehicle _center;
 
 			//create global vehicle
-			private _center = ["CreateVehicle",[_data,false]] call jn_fnc_garage;//JNG_CENTER is redefined in this function
+			pr _center = ["CreateVehicle",[_data,false]] call jn_fnc_garage;//JNG_CENTER is redefined in this function
 			_center setpos _pos;
 
 			//lock the vehicle
@@ -1712,14 +1712,14 @@ switch _mode do {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	case "CreateVehicle": {
 		params ["_data","_local",["_pos",player getPos [10,getDir player]]];
-		private _data = _this select 0;
-		private _local = _this select 1;//true, spawns vehicle localy
+		pr _data = _this select 0;
+		pr _local = _this select 1;//true, spawns vehicle localy
 		SPLIT_SAVE
 
-		private _cfg = (configfile >> "cfgvehicles" >> _type);
+		pr _cfg = (configfile >> "cfgvehicles" >> _type);
 
 		//create vehicle
-		private _center = objnull;
+		pr _center = objnull;
 		if(_local)then{
 			_center = _type createVehiclelocal _pos;
 			_center enablesimulation false;
@@ -1735,9 +1735,9 @@ switch _mode do {
 		_center setVariable ["jng_name",_name];
 
 		//set textures and animations
-		private _initAnimations = [];
+		pr _initAnimations = [];
 		{
-			private _configName = configname _x;
+			pr _configName = configname _x;
 			_initAnimations pushback _configName;
 			_initAnimations pushback parseNumber (_configName in _animations);// 1 or 0
 		} foreach (configproperties [_cfg >> "animationSources","isclass _x",true]);
@@ -1748,17 +1748,17 @@ switch _mode do {
 
 		//Load ammo, after we removed default ammo
 		{
-			private _magazine = _x select 0;
-			private _turret = _x select 1;
+			pr _magazine = _x select 0;
+			pr _turret = _x select 1;
 			_center removeMagazinesTurret [_magazine, _turret];
 		}foreach (magazinesAllTurrets _center);
 
 		{
-			private _turret = _x select 0;
-			private _magazine = _x select 1;
-			private _ammo = _x select 2;
+			pr _turret = _x select 0;
+			pr _magazine = _x select 1;
+			pr _ammo = _x select 2;
 
-			private _ammoPerMag = getNumber (configfile >> "CfgMagazines" >> _magazine >> "count");
+			pr _ammoPerMag = getNumber (configfile >> "CfgMagazines" >> _magazine >> "count");
 
 			while {_ammo > 0}do{
 				if(_ammoPerMag>_ammo)then{_ammoPerMag = _ammo};
@@ -1770,9 +1770,9 @@ switch _mode do {
 		//Load pylon from save
 		{ _center removeWeaponGlobal getText (configFile >> "CfgMagazines" >> _x >> "pylonWeapon") } forEach getPylonMagazines _center;
 		{
-			private _type = _x select 0;
-			private _amount = _x select 1;
-			private _location = _foreachindex+1;
+			pr _type = _x select 0;
+			pr _amount = _x select 1;
+			pr _location = _foreachindex+1;
 			_center setPylonLoadOut [_location, _type, true];
 			_center setAmmoOnPylon [_location, _amount];
 		}foreach (_ammoPylon);
@@ -1787,7 +1787,7 @@ switch _mode do {
 		};
 
 		if!(_attachItem isEqualTo [])then{
-			private _attachment = ["CreateVehicle",[_attachItem,_local,[0,0,0]]] call jn_fnc_garage;
+			pr _attachment = ["CreateVehicle",[_attachItem,_local,[0,0,0]]] call jn_fnc_garage;
 			[_center,_attachment, false,false] call jn_fnc_logistics_load;
 		};
 
@@ -1804,17 +1804,17 @@ switch _mode do {
 	/////////////////////////////////////////////////////////////////////////////////////////// EVENT
 	case "buttonCargo":{
 		params["_display","_add"];
-		private _center = (missionnamespace getvariable ["JNG_CENTER",objnull]);
-		private _ctrlList = ctrlnull;
-		private _index = -1;
-		private _lbcursel = -1;
+		pr _center = (missionnamespace getvariable ["JNG_CENTER",objnull]);
+		pr _ctrlList = ctrlnull;
+		pr _index = -1;
+		pr _lbcursel = -1;
 		{
 			_ctrlList = _display displayctrl (IDC_RSCDISPLAYARSENAL_LIST + _x);
 			if (ctrlenabled _ctrlList) exitwith {_lbcursel = lbcursel _ctrlList;_index = _x};
 		} foreach [IDCS_RIGHT];
 
-		private _ctrlSort = _display displayctrl (IDC_RSCDISPLAYARSENAL_SORT + IDC_JNG_TAB_REARM_SORT);
-		private _curselSort = lbCurSel _ctrlSort;
+		pr _ctrlSort = _display displayctrl (IDC_RSCDISPLAYARSENAL_SORT + IDC_JNG_TAB_REARM_SORT);
+		pr _curselSort = lbCurSel _ctrlSort;
 		_dataStr = _ctrlSort lbData _curselSort; //"[-1]"
 		DECOMPILE_DATA
 		_turret = _data; //[-1]
@@ -1848,15 +1848,15 @@ switch _mode do {
 
 
 		//update Data in vehicle list
-		private _indexLeft = _center call jn_fnc_garage_getVehicleIndex;
-		private _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft);
-		private _cursel = lbCurSel _ctrlListLeft;
-		private _datastr = _ctrlListLeft lbdata _cursel;
+		pr _indexLeft = _center call jn_fnc_common_vehicle_getVehicleType;
+		pr _ctrlListLeft = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _indexLeft);
+		pr _cursel = lbCurSel _ctrlListLeft;
+		pr _datastr = _ctrlListLeft lbdata _cursel;
 
 		DECOMPILE_DATA
 		SPLIT_SAVE
 		
-		private _found = false;
+		pr _found = false;
 		{
 			_turret2 = _x select 0;
 			_magazine2 = _x select 1;
@@ -1880,16 +1880,16 @@ switch _mode do {
 	case "ShowStats": {
 		params ["_display"];
 		
-		private _ctrlStats = _display displayctrl IDC_RSCDISPLAYARSENAL_STATS_STATS;
-		private _ctrlStatsPos = ctrlposition _ctrlStats;
+		pr _ctrlStats = _display displayctrl IDC_RSCDISPLAYARSENAL_STATS_STATS;
+		pr _ctrlStatsPos = ctrlposition _ctrlStats;
 		_ctrlStatsPos set [0,0];
 		_ctrlStatsPos set [1,0];
 		
-		private _ctrlBackground = _display displayctrl IDC_RSCDISPLAYARSENAL_STATS_STATSBACKGROUND;
-		private _barMin = 0.01;
-		private _barMax = 1;
+		pr _ctrlBackground = _display displayctrl IDC_RSCDISPLAYARSENAL_STATS_STATSBACKGROUND;
+		pr _barMin = 0.01;
+		pr _barMax = 1;
 
-		private _object = UINamespace getVariable "jn_object";
+		pr _object = UINamespace getVariable "jn_object";
 
 		_statControls = [
 			[IDC_RSCDISPLAYARSENAL_STATS_STAT1,IDC_RSCDISPLAYARSENAL_STATS_STATTEXT1, "xxxxxx"],
@@ -1921,10 +1921,10 @@ switch _mode do {
 		_center = (missionnamespace getvariable ["JNG_CENTER",objnull]);
 
 		if(_center isEqualTo player)exitWith{};
-		private _index = _center call jn_fnc_garage_getVehicleIndex;
+		pr _index = _center call jn_fnc_common_vehicle_getVehicleType;
 		diag_log ["_index",_index];
 		if(_index == -1)exitWith{};
-		private _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
+		pr _ctrlList = _display displayCtrl (IDC_RSCDISPLAYARSENAL_LIST + _index);
 
 		_cursel = lbCurSel _ctrlList;
 
@@ -1950,10 +1950,10 @@ switch _mode do {
 	case "UpdatePoints":{
 		params["_amount","_type"];
 		
-		private _object = UINamespace getVariable "jn_object";
+		pr _object = UINamespace getVariable "jn_object";
 		
-		private _ctrlStat = _display displayctrl (IDC_RSCDISPLAYARSENAL_STATS_STAT1 +_type);
-		private _ctrlText = _display displayctrl (IDC_RSCDISPLAYARSENAL_STATS_STATTEXT1 +_type);
+		pr _ctrlStat = _display displayctrl (IDC_RSCDISPLAYARSENAL_STATS_STAT1 +_type);
+		pr _ctrlText = _display displayctrl (IDC_RSCDISPLAYARSENAL_STATS_STATTEXT1 +_type);
 		
 		_ctrlStat progresssetposition 1;//TODO
 		

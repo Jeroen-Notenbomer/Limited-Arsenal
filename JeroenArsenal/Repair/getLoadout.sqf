@@ -1,23 +1,23 @@
-
+#include "defineCommon.inc"
 
 params["_vehicle"];
 
-private _currentLoadout = [];
-private _magDetail = magazinesAllTurrets _vehicle;
-private _pylonList = getPylonMagazines _vehicle;
-private _pylonRun = 1;
+pr _currentLoadout = [];
+pr _magDetail = magazinesAllTurrets _vehicle;
+pr _pylonList = getPylonMagazines _vehicle;
+pr _pylonRun = 1;
 {
-	private _magClass = _x select 0;
-	private _turretPath = _x select 1;
-	private _ammoCount = _x select 2;
-	private _pylon = -1;
+	pr _magClass = _x select 0;
+	pr _turretPath = _x select 1;
+	pr _ammoCount = _x select 2;
+	pr _pylon = -1;
 	if (_magclass in _pylonList) then 
 	{_pylon = _pylonRun;_pylonRun = _pylonRun + 1;
 	_currentLoadout pushBack [_turretPath, _pylon, _magClass, _ammoCount];
 	} else
 	{
-	private ["_tempAmmo", "_inserted"];
-	private _inserted = false;
+	pr ["_tempAmmo", "_inserted"];
+	pr _inserted = false;
 		{
 			if ((_x select 0) isEqualTo _turretPath && (_x select 2) isEqualTo _magClass) then
 			{

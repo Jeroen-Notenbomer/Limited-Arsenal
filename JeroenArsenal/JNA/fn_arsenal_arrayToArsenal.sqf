@@ -1,3 +1,5 @@
+#include "defineCommon.inc"
+
 if(!isserver)exitwith{};
 
 params [["_object",objNull,[objNull]],"_array"];

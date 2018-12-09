@@ -10,31 +10,29 @@
 	Parameter(s):
 	_object: object to refuel
 	_object: object to refuel from
-	_amount: custom amount of liters to be transfert
 	
 	Returns:
 
 	
 */
-
-//we open dialog so we probebly want to spawn this
 _this spawn {
-
-	params["_vehicleTo", "_vehicleFrom", ["_amount",999999]];
-	private "_anserMsg";//true refuel fuelTank, false refuel fuelCargo
-	
-	//nil check is done in addactionselect.sqf
-	//_vehicleFrom has fuel check is already done in addActionRefuel
+	params[["_vehicleTo",objNull,[objNull]], ["_vehicleFrom",objNull,[objNull]]];
 
 	if(_vehicleTo distance _vehicleFrom > INT_MAX_DISTANCE_TO_REFUEL)exitwith{hint "vehicle to far away"};
 
-	//check the options we have where fuel needs to go to and select one
-	private _fuelCargoCapacity = _vehicleTo  call jn_fnc_fuel_getCargoCapacity;
-	private _fuelCapacity = _vehicleTo call jn_fnc_fuel_getCapacity;
+	//check if objects are in use by other players
+	if(!isNil {_vehicleTo getVariable "refuelAction_inUse"})exitWith{hint "Vehicle is already being refueld"};
+	if(!isNil {_vehicleFrom getVariable "refuelAction_inUse"})exitWith{hint "Object in use"};
 
 	
-	if(_fuelCargoCapacity == 0 && {_fuelCapacity == 0})exitWith{hint "cant refuel vehicle"};
-	private _hasBoth = (_fuelCargoCapacity != 0 && {_fuelCapacity != 0});
+	//check the options we have where fuel needs to go to and select one
+	pr _cargoCapacity = _vehicleTo  call jn_fnc_fuel_getCargoCapacity;
+	pr _capacity = _vehicleTo call jn_fnc_fuel_getCapacity;
+
+	if(_cargoCapacity == 0 && {_capacity == 0})exitWith{hint "cant refuel vehicle"};
+
+	pr _hasBoth = (_cargoCapacity != 0 && {_capacity != 0});
+	pr "_anserMsg";	
 	if _hasBoth then{
 		if(_vehicleTo isEqualTo _vehicleFrom)then{
 			_anserMsg = true
@@ -44,46 +42,75 @@ _this spawn {
 			] call BIS_fnc_guiMessage;
 		};
 	};
-	
+		
 	//exit when object is for example a fuelstation
 	if(_vehicleTo isEqualTo _vehicleFrom && !_hasBoth)exitwith{hint "object has no fuel tank"};
-	
+		
 	if(isNil "_anserMsg")then{
-		_anserMsg = (_fuelCargoCapacity == 0);
+		_anserMsg = (_cargoCapacity == 0);
 	};
 
-	private ["_fuel","_fuelCargo","_required"];
 
-	//check how much we need to fill up in liters
-	if(_anserMsg)then{
-		//refuel tank
-		_fuel = fuel _vehicleTo; //0 to 1
-		_required = (1 - _fuel) * _fuelCapacity;
-	}else{
-		//refuel cargo
-		_fuelCargo = _vehicleTo call jn_fnc_fuel_getCargo;
-		_required = _fuelCargoCapacity - _fuelCargo;
-	};
+	pr _get = 		[jn_fnc_fuel_getCargo, jn_fnc_fuel_get] select _anserMsg;
+	pr _set = 		[jn_fnc_fuel_setCargo, jn_fnc_fuel_set] select _anserMsg;
+			_capacity = [_cargoCapacity, _capacity] select _anserMsg;
+
+	pr _amount = _vehicleTo call _get;
+	pr _amountFrom = _vehicleFrom call jn_fnc_fuel_getCargo;
 
 	//check if tank is already full
-	if(_required == 0)exitwith{hint "vehicle is already full"};
+	if(_capacity == _amount)exitwith{hint "vehicle is already full"};
 
-	//check if optinal _amount was used
-	_obj_fuelCargo = _vehicleFrom call jn_fnc_fuel_getCargo;
-	if(_amount > _required)then{_amount = _required};
-	if(_amount > _obj_fuelCargo)then{_amount = _obj_fuelCargo;};
-
-	//update _vehicleTo
-	if(_anserMsg)then{
-		_vehicleTo setfuel (_fuel + (_amount/_required));
-	}else{
-		[_vehicleTo,(_fuelCargo + _amount)] call jn_fnc_fuel_setCargo;
-	};
-
-	//updated _vehicleFrom
-	[_vehicleFrom,(_obj_fuelCargo - _amount)] call jn_fnc_fuel_setCargo;
+	//all checks are done vehicle can be refueled
 	
-	hint "Vehicle refueled";
+	//disable refuel for other players
+	_vehicleTo setVariable ["refuelAction_inUse",name player,true];
+	_vehicleFrom setVariable ["refuelAction_inUse",name player,true];	
+	
+	pr _completeRefuel = true;
+	
+	pr _refuelAmount = _capacity - _amount; //required for full refuel
 
+	if(_refuelAmount > _amountFrom)then{_refuelAmount= _amountFrom;_completeRefuel = false;};
+
+	[player,{}] call JN_fnc_common_addActionCancel;
+	
+	//0L 10sec 10000L 60sec
+	pr _delta = round( (FLOAT_REFUELINTERVAL*_capacity)/(10+(40*_capacity/10000)));
+	diag_log ["*0.5",_delta];
+	while{_refuelAmount > 0}do{
+		if (player call JN_fnc_common_getActionCanceled)exitWith{};
+		
+		//update
+		
+		if(_delta > _refuelAmount)then{_delta = _refuelAmount};
+		_refuelAmount = _refuelAmount - _delta;
+		
+		[_vehicleTo,(_vehicleTo call _get)+_delta] call _set;
+		[_vehicleFrom,(_vehicleFrom call jn_fnc_fuel_getCargo)-_delta] call jn_fnc_fuel_setCargo;
+		[player,("(" + str round(((_vehicleTo call _get)/ _capacity)*100) +"%)")] call JN_fnc_common_updateActionCancel;
+		sleep FLOAT_REFUELINTERVAL;
+	};
+	
+	//update Global
+	[_vehicleTo,(_vehicleTo call _get),true] call _set;
+	[_vehicleFrom,(_vehicleFrom call jn_fnc_fuel_getCargo),true] call jn_fnc_fuel_setCargo;
+	
+	//message
+	if(player call JN_fnc_common_getActionCanceled)then{
+		hint "Refuel canceled";
+	}else{
+		if(_completeRefuel)then{
+			hint "Vehicle refueled";
+		}else{
+			hint "Object ran out of fuel"
+		};
+	};
+	
+	//cleanup
+	player call JN_fnc_common_removeActionCancel;
+	_vehicleTo setVariable ["refuelAction_inUse",nil,true];
+	_vehicleFrom setVariable ["refuelAction_inUse",nil,true];
+	
 
 };//spawn

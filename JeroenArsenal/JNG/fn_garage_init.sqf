@@ -1,3 +1,4 @@
+#include "defineCommon.inc"
 /*
 	Author: Jeroen Notenbomer
 
@@ -32,19 +33,19 @@ if(isServer)then{
 	diag_log ("Init JNG: server " + str _object);
 
     //load default if it was not loaded from savegame
-    private _vehicleLists = _object getVariable "jng_vehicleLists";
+    pr _vehicleLists = _object getVariable "jng_vehicleLists";
     if(isnil "_vehicleLists")then{
         _object setVariable ["jng_vehicleLists" ,[[],[],[],[],[],[]]];
     };
-	private _fuel = _object getVariable "jng_fuel";
+	pr _fuel = _object getVariable "jng_fuel";
     if(isnil "_fuel")then{
         _object setVariable ["jng_fuel" ,0];
     };
-	private _ammoPoints = _object getVariable "jng_ammoPoints";
+	pr _ammoPoints = _object getVariable "jng_ammoPoints";
     if(isnil "_ammoPoints")then{
         _object setVariable ["jng_ammoPoints" ,0];
     };
-	private _repairPoints = _object getVariable "jng_repairPoints";
+	pr _repairPoints = _object getVariable "jng_repairPoints";
     if(isnil "_repairPoints")then{
         _object setVariable ["jng_repairPoints" ,0];
     };
@@ -59,15 +60,15 @@ if(hasInterface)then{
 	_object addaction [
         format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNG_ACT_OPEN"],
         {
-            private _object = _this select 0;
+            pr _object = _this select 0;
 
             //start loading screen
 			["jn_fnc_garage", "Loading Nutz™ Arsenal"] call bis_fnc_startloadingscreen;
 			[] spawn {
 				uisleep 10;
-				private _ids = missionnamespace getvariable ["BIS_fnc_startLoadingScreen_ids",[]];
+				pr _ids = missionnamespace getvariable ["BIS_fnc_startLoadingScreen_ids",[]];
 				if("jn_fnc_garage" in _ids)then{
-					private _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
+					pr _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
 					titleText["ERROR DURING LOADING GARAGE", "PLAIN"];
 					_display closedisplay 2;
 					["jn_fnc_garage"] call BIS_fnc_endLoadingScreen;
@@ -93,20 +94,23 @@ if(hasInterface)then{
 	_object addaction [
         format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNG_ACT_STOREVEHICLE"],
         {
-            private _object = _this select 0;
+            pr _object = _this select 0;
 			
-			private _script =  {
+			pr _script =  {
 				params ["_object"];
-				private _vehicle = cursorObject;
+				pr _vehicle = cursorObject;
 				[_vehicle,_object] call jn_fnc_garage_garageVehicle;
 			};
-			
-			private _conditions = {
+			pr _conditionActive = {
+				params ["_object"];
+				alive player;
+			};
+			pr _conditions = {
 				params ["_object"];
 				!isnull cursorObject && {!(_object isEqualTo cursorObject)}&&{_object distance cursorObject < MAX_DISTANCE_TO_STORE}
 			};
 						
-			[_script,_conditions,_object] call jn_fnc_common_addActionSelect;
+			[_script,_conditionActive,_conditionColor,_object] call jn_fnc_common_addActionSelect;
 		},
         [],
         6,

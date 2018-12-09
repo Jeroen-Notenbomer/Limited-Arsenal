@@ -1,9 +1,11 @@
+#include "defineCommon.inc"
+
 params["_type"];
 
 //if object was past change it to type
 if!(_type isEqualType "")then{_type = typeof __type};
 
-private _wheels = ("true" configClasses (configfile >> "CfgVehicles" >> _type >> "Wheels"));
+pr _wheels = ("true" configClasses (configfile >> "CfgVehicles" >> _type >> "Wheels"));
 if (count _wheels == 0 )exitWith{-1};
 
 //return
@@ -24,12 +26,12 @@ _info = getAllHitPointsDamage _vehicle;
 _info params["_hitpoints","_selections","_damages"];
 
 {
-	private _hitpoint = _hitpoints select _forEachIndex;
-	private _selection = _selections select _forEachIndex;
-	private _damage = _x;
+	pr _hitpoint = _hitpoints select _forEachIndex;
+	pr _selection = _selections select _forEachIndex;
+	pr _damage = _x;
 	
 	if(_selection find  "wheel_")then{
-		private _name = [_selection,0,9] call BIS_fnc_trimString;
+		pr _name = [_selection,0,9] call BIS_fnc_trimString;
 		[_name, "axis"] joinString "";
 		
 		

@@ -1,6 +1,4 @@
-#include "\A3\ui_f\hpp\defineDIKCodes.inc"
-#include "\A3\Ui_f\hpp\defineResinclDesign.inc"
-
+#include "defineCommon.inc"
 /*
 	Author: Jeroen Notenbomer
 
@@ -39,7 +37,7 @@ if(isServer)then{
 	diag_log ("Init JNA: server " + str _object);
 
     //load default if it was not loaded from savegame
-    private _datalist = _object getVariable "jna_dataList";
+    pr _datalist = _object getVariable "jna_dataList";
     if(isnil "_datalist")then{
         _object setVariable ["jna_dataList" ,[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]];
     };
@@ -53,15 +51,15 @@ if(hasInterface)then{
     _object addaction [
         format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNA_ACT_OPEN"],
         {
-            private _object = _this select 0;
+            pr _object = _this select 0;
 
             //start loading screen
 			["jn_fnc_arsenal", "Loading Nutz™ Arsenal"] call bis_fnc_startloadingscreen;
 			[] spawn {
 				uisleep 5;
-				private _ids = missionnamespace getvariable ["BIS_fnc_startLoadingScreen_ids",[]];
+				pr _ids = missionnamespace getvariable ["BIS_fnc_startLoadingScreen_ids",[]];
 				if("jn_fnc_arsenal" in _ids)then{
-					private _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
+					pr _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
 					titleText["ERROR DURING LOADING ARSENAL", "PLAIN"];
 					_display closedisplay 2;
 					["jn_fnc_arsenal"] call BIS_fnc_endLoadingScreen;
@@ -69,7 +67,7 @@ if(hasInterface)then{
 				
 				//TODO this is a temp fix for rhs because it freezes the loading screen if no primaryWeapon was equiped. This will be fix in rhs 0.4.9
 				if("bis_fnc_arsenal" in _ids)then{
-					private _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
+					pr _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
 					diag_log "JNA: Non Fatal Error, RHS?";
 					titleText["Non Fatal Error, RHS?", "PLAIN"];
 					["bis_fnc_arsenal"] call BIS_fnc_endLoadingScreen;
@@ -84,16 +82,16 @@ if(hasInterface)then{
             ]];
 
             //Save attachments in containers, because BIS arsenal removes them
-            private _attachmentsContainers = [[],[],[]];
+            pr _attachmentsContainers = [[],[],[]];
             {
-                private _container = _x;
-                private _weaponAtt = weaponsItemsCargo _x;
-                private _attachments = [];
+                pr _container = _x;
+                pr _weaponAtt = weaponsItemsCargo _x;
+                pr _attachments = [];
 
                 if!(isNil "_weaponAtt")then{
 
                     {
-                        private _atts = [_x select 1,_x select 2,_x select 3,_x select 5];
+                        pr _atts = [_x select 1,_x select 2,_x select 3,_x select 5];
                         _atts = _atts - [""];
                         _attachments = _attachments + _atts;
                     } forEach _weaponAtt;
@@ -102,9 +100,7 @@ if(hasInterface)then{
             } forEach [uniformContainer player,vestContainer player,backpackContainer player];
             missionNamespace setVariable ["jna_containerCargo_init", _attachmentsContainers];
 
-            //set type and object to use later
-            UINamespace setVariable ["jn_type","arsenal"];
-            UINamespace setVariable ["jn_object",_object];
+
 
             //request server to open arsenal
             [clientOwner,_object] remoteExecCall ["jn_fnc_arsenal_requestOpen",2];
@@ -121,9 +117,9 @@ if(hasInterface)then{
     _object addaction [
 		format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNA_ACT_CONTAINER_OPEN"],
         {
-			private _object = _this select 0;
+			pr _object = _this select 0;
 			
-			private _script =  {
+			pr _script =  {
 				params ["_object"];
 				
 				//check if player is looking at some object
@@ -134,10 +130,10 @@ if(hasInterface)then{
 				if(_object distance cursorObject > 10)exitWith{hint localize "STR_JNA_ACT_CONTAINER_SELECTERROR2";};
 
 				//check if object has inventory
-				private _className = typeOf _object_selected;
-				private _tb = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxbackpacks");
-				private _tm = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxmagazines");
-				private _tw = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxweapons");
+				pr _className = typeOf _object_selected;
+				pr _tb = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxbackpacks");
+				pr _tm = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxmagazines");
+				pr _tw = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxweapons");
 				if !(_tb > 0  || _tm > 0 || _tw > 0) exitWith{hint localize "STR_JNA_ACT_CONTAINER_SELECTERROR3";};
 
 
@@ -151,9 +147,9 @@ if(hasInterface)then{
 				["jn_fnc_arsenal", "Loading Nutz™ Arsenal"] call bis_fnc_startloadingscreen;
 				[] spawn {
 					uisleep 5;
-					private _ids = missionnamespace getvariable ["BIS_fnc_startLoadingScreen_ids",[]];
+					pr _ids = missionnamespace getvariable ["BIS_fnc_startLoadingScreen_ids",[]];
 					if("jn_fnc_arsenal" in _ids)then{
-						private _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
+						pr _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
 						titleText["ERROR DURING LOADING ARSENAL", "PLAIN"];
 						_display closedisplay 2;
 						["jn_fnc_arsenal"] call BIS_fnc_endLoadingScreen;
@@ -163,8 +159,11 @@ if(hasInterface)then{
 				//request server to open arsenal
 				[clientOwner,_object] remoteExecCall ["jn_fnc_arsenal_requestOpen",2];
 			};
-			
-			private _conditions = {
+			pr _conditionActive = {
+				params ["_object"];
+				alive player;
+			};
+			pr _conditionColor = {
 				params ["_object"];
 				
 				!isnull cursorObject
@@ -172,16 +171,16 @@ if(hasInterface)then{
 					_object distance cursorObject < 10;
 				}&&{
 					//check if object has inventory
-					private _className = typeOf cursorObject;
-					private _tb = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxbackpacks");
-					private _tm = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxmagazines");
-					private _tw = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxweapons");
+					pr _className = typeOf cursorObject;
+					pr _tb = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxbackpacks");
+					pr _tm = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxmagazines");
+					pr _tw = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxweapons");
 					if (_tb > 0  || _tm > 0 || _tw > 0) then {true;} else {false;};
 				
 				}//return
 			};
 						
-			[_script,_conditions,_object] call jn_fnc_common_addActionSelect;
+			[_script,_conditionActive,_conditionColor,_object] call jn_fnc_common_addActionSelect;
 		},
         [],
         6,
@@ -196,9 +195,9 @@ if(hasInterface)then{
     _object addaction [
 		format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNA_ACT_UNLOAD"],
         {
-			private _object = _this select 0;
+			pr _object = _this select 0;
 			
-			private _script =  {
+			pr _script =  {
 				params ["_object"];//object action was attached to
 				
 				//check if player is looking at some object
@@ -210,17 +209,20 @@ if(hasInterface)then{
 				if(_object distance cursorObject > 10)exitWith{hint localize "STR_JNA_ACT_CONTAINER_SELECTERROR2";};
 
 				//check if object has inventory
-				private _className = typeOf _object_selected;
-				private _tb = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxbackpacks");
-				private _tm = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxmagazines");
-				private _tw = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxweapons");
+				pr _className = typeOf _object_selected;
+				pr _tb = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxbackpacks");
+				pr _tm = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxmagazines");
+				pr _tw = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxweapons");
 				if !(_tb > 0  || _tm > 0 || _tw > 0) exitWith{hint localize "STR_JNA_ACT_CONTAINER_SELECTERROR3";};
 
 
 				[_object_selected,_object] call jn_fnc_arsenal_cargoToArsenal;
 			};
-			
-			private _conditions = {
+			pr _conditionActive = {
+				params ["_object"];
+				alive player;
+			};
+			pr _conditionColor = {
 				params ["_object"];
 				
 				!isnull cursorObject
@@ -228,16 +230,16 @@ if(hasInterface)then{
 					_object distance cursorObject < 10;
 				}&&{
 					//check if object has inventory
-					private _className = typeOf cursorObject;
-					private _tb = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxbackpacks");
-					private _tm = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxmagazines");
-					private _tw = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxweapons");
+					pr _className = typeOf cursorObject;
+					pr _tb = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxbackpacks");
+					pr _tm = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxmagazines");
+					pr _tw = getNumber (configFile >> "CfgVehicles" >> _className >> "transportmaxweapons");
 					if (_tb > 0  || _tm > 0 || _tw > 0) then {true;} else {false;};
 				
 				}//return
 			};
 						
-			[_script,_conditions,_object] call jn_fnc_common_addActionSelect;
+			[_script,_conditionActive,_conditionColor,_object] call jn_fnc_common_addActionSelect;
 		},
         [],
         6,

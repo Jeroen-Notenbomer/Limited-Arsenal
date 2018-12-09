@@ -1,3 +1,5 @@
+#include "defineCommon.inc"
+
 /*
 	Author: Jeroen Notenbomer
 
@@ -15,7 +17,7 @@
 params ["_magClass"];
 
 
-private _ammoClass = getText(configfile >> "CfgMagazines" >> _magClass >> "ammo");
+pr _ammoClass = getText(configfile >> "CfgMagazines" >> _magClass >> "ammo");
 
 getNumber (configfile >> "CfgAmmo" >> _ammoClass >> "cost"); 
 		

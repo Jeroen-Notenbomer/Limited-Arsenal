@@ -1,8 +1,5 @@
 #include "..\defineCommon.inc"
 
-#include "\A3\ui_f\hpp\defineDIKCodes.inc"
-#include "\A3\Ui_f\hpp\defineResinclDesign.inc"
-
 
 #define STATTYPE_FUEL 0
 #define STATTYPE_AMMO 1
@@ -10,12 +7,12 @@
 #define STATTYPES [STATTYPE_FUEL,STATTYPE_AMMO,STATTYPE_REPAIR]
 #define FADE_DELAY	0.15
 
-#define IDC_JNG_TAB_CAR IDC_RSCDISPLAYARSENAL_TAB_PRIMARYWEAPON
-#define IDC_JNG_TAB_ARMOR IDC_RSCDISPLAYARSENAL_TAB_SECONDARYWEAPON
-#define IDC_JNG_TAB_HELI IDC_RSCDISPLAYARSENAL_TAB_HANDGUN
-#define IDC_JNG_TAB_PLANE IDC_RSCDISPLAYARSENAL_TAB_UNIFORM
-#define IDC_JNG_TAB_NAVAL IDC_RSCDISPLAYARSENAL_TAB_VEST
-#define IDC_JNG_TAB_STATIC IDC_RSCDISPLAYARSENAL_TAB_BACKPACK
+#define IDC_JNG_TAB_CAR TYPE_CAR
+#define IDC_JNG_TAB_ARMOR TYPE_ARMOR
+#define IDC_JNG_TAB_HELI TYPE_HELI
+#define IDC_JNG_TAB_PLANE TYPE_PLANE
+#define IDC_JNG_TAB_NAVAL TYPE_NAVAL
+#define IDC_JNG_TAB_STATIC TYPE_STATIC
 
 #define IDC_JNG_TAB_REARM IDC_RSCDISPLAYARSENAL_TAB_CARGOMAG
 #define IDC_JNG_TAB_REPAIR IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL
@@ -48,7 +45,7 @@
 #define IDCS	[IDCS_LEFT,IDCS_RIGHT]
 
 #define DECOMPILE_DATA\
-	private _data = if(_dataStr =="")then{[]}else{parseSimpleArray _dataStr};
+	pr _data = if(_dataStr =="")then{[]}else{parseSimpleArray _dataStr};
 	
 #define SPLIT_SAVE\
 	_data params [\
@@ -74,26 +71,26 @@
 		["ERROR COMPILE_SAVE JGA"] call BIS_fnc_error;\
 		diag_log "ERROR COMPILE_SAVE JGA";\
 	};\
-	private _data = [_name, _beingChanged, _locked, _lockedName, _type, _texture, _animations, _ammoClassic, _ammoPylon, _damage, _attachItem, _fuel, _fuelCap,_fuelcargo,_fuelcargoCap];\
-	private _datastr = str _data;
+	pr _data = [_name, _beingChanged, _locked, _lockedName, _type, _texture, _animations, _ammoClassic, _ammoPylon, _damage, _attachItem, _fuel, _fuelCap,_fuelcargo,_fuelcargoCap];\
+	pr _datastr = str _data;
 	
 #define SPLIT_REARM\
-	private _magazine = _data select 0;\
-	private _currentAmount = _data select 1;\
-	private _maxAmount = _data select 2;\
-	private _displayName = _data select 3;
+	pr _magazine = _data select 0;\
+	pr _currentAmount = _data select 1;\
+	pr _maxAmount = _data select 2;\
+	pr _displayName = _data select 3;
 	
 #define COMPILE_REARM\
-	private _data = [_magazine, _currentAmount, _maxAmount, _displayName];\
-	private _datastr = str _data;
+	pr _data = [_magazine, _currentAmount, _maxAmount, _displayName];\
+	pr _datastr = str _data;
 
 
 #define AMOUTTOTEXT\
 {\
-	private _amount = _this;\
+	pr _amount = _this;\
 	if(_amount == -1)exitWith{"   ∞    ";};\
-	private _suffix = "";\
-	private _prefix = "";\
+	pr _suffix = "";\
+	pr _prefix = "";\
 	if(_amount > 9999)then{\
 		_amount = round(_amount/1000);_suffix="k";\
 		_prefix = switch true do{\
