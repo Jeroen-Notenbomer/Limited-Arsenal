@@ -31,12 +31,14 @@ Gives all fuel containers (trucks, fuel stations) limited amount of fuel.
 Make vehicles use more fuel.
 
 -------------------------Repair-----------------------
+
 Repair vehicles which requere repair points.
 Repair points can be stored in repait trucks and toolkits.
 All parts have a repair cost.
 Unit is limited in what they can repair based on skill.
 
 --------------------------Ammo------------------------
+
 Added ammo trucks with limited ammo
 Added some interface to select what ammo to rearm
 
