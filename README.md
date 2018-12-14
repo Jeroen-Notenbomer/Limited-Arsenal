@@ -1,3 +1,7 @@
+TODO!
+Untested in mp
+Finalize some code. Random errors and hints
+
 
 -------------------------ARSENAL-----------------------
 
@@ -20,3 +24,19 @@ When a static weapon and a truck/pickup is stored you have the ability to weld t
 - TODO explain how to use it!
 
 Load boxes in vehicles with animation in a visable way(not like ace).
+
+--------------------------Fuel------------------------
+Added actions to fuel trucks and a indicator of how much fuel they contain.
+Gives all fuel containers (trucks, fuel stations) limited amount of fuel.
+Make vehicles use more fuel.
+
+-------------------------Repair-----------------------
+Repair vehicles which requere repair points.
+Repair points can be stored in repait trucks and toolkits.
+All parts have a repair cost.
+Unit is limited in what they can repair based on skill.
+
+--------------------------Ammo------------------------
+Added ammo trucks with limited ammo
+Added some interface to select what ammo to rearm
+
