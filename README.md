@@ -26,6 +26,7 @@ When a static weapon and a truck/pickup is stored you have the ability to weld t
 Load boxes in vehicles with animation in a visable way(not like ace).
 
 --------------------------Fuel------------------------
+
 Added actions to fuel trucks and a indicator of how much fuel they contain.
 Gives all fuel containers (trucks, fuel stations) limited amount of fuel.
 Make vehicles use more fuel.
