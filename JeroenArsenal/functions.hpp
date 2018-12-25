@@ -2,11 +2,11 @@ class JN {
 	
 	class Test {
 		file = "JeroenArsenal\Test";
-		class test_init {};
+		class test_init {preinit = 1;};
 		class test_recompile {};
 		class test_configViewer {};
+		class test_debugv2 {preinit = 1;};
 	};
-	
 	class Common {
 		file = "JeroenArsenal\Common";
 		class common_addActionSelect {};
@@ -60,8 +60,8 @@ class JN {
 	
 	class Fuel {
 		file = "JeroenArsenal\Fuel";
-		class fuel_init {};
-		class fuel_consumption_init {};
+		class fuel_init {preinit = 1;};
+		class fuel_consumption_init {postInit = 1;};
 		class fuel_consumption_start {};
 		class fuel_consumption_stop {};
 		class fuel_refuel {};
@@ -78,7 +78,7 @@ class JN {
 	
 	class Ammo {
 		file = "JeroenArsenal\Ammo";
-		class ammo_init {};
+		class ammo_init {preinit = 1;};
 		class ammo_getLoadout {};
 		class ammo_getPylonLoadoutMissing {};
 		class ammo_addActionRearm {};
@@ -110,7 +110,7 @@ class JN {
 	
 	class JNL {
 		file = "JeroenArsenal\JNL";
-		class logistics_init {};
+		class logistics_init {preinit = 1;};
 		class logistics_load {};
 		class logistics_unLoad {};
 		class logistics_addAction {};

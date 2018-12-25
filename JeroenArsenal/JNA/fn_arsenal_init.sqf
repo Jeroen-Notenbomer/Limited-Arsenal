@@ -39,7 +39,7 @@ if(isServer)then{
     //load default if it was not loaded from savegame
     pr _datalist = _object getVariable "jna_dataList";
     if(isnil "_datalist")then{
-        _object setVariable ["jna_dataList" ,[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]];
+        _object setVariable ["jna_dataList" ,EMPTY_ARRAY];
     };
 };
 
@@ -48,8 +48,8 @@ if(hasInterface)then{
     diag_log ("Init JNA: player "+ str _object);
 
     //add arsenal button
-    _object addaction [
-        format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNA_ACT_OPEN"],
+    _id = _object addaction [
+        "",
         {
             pr _object = _this select 0;
 
@@ -98,8 +98,10 @@ if(hasInterface)then{
                     _attachmentsContainers set [_foreachindex,_attachments];
                 };
             } forEach [uniformContainer player,vestContainer player,backpackContainer player];
-            missionNamespace setVariable ["jna_containerCargo_init", _attachmentsContainers];
-
+            
+			UINamespace setVariable ["jna_containerCargo_init", _attachmentsContainers];
+			UINamespace setVariable ["jn_type","arsenal"];
+			UINamespace setVariable ["jn_object",_object];
 
 
             //request server to open arsenal
@@ -110,12 +112,13 @@ if(hasInterface)then{
         true,
         false,
         "",
-        "alive _target && {_target distance _this < 5}"
+        "alive _target && {_target distance _this < 5} && {vehicle player == player}"
     ];
+	ACTION_SET_ICON_AND_TEXT(_object, _id, STR_ACTION_TEXT_ARSENAL, STR_ACTION_ICON_ARSENAL);
 
     //add vehicle/box filling button
-    _object addaction [
-		format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNA_ACT_CONTAINER_OPEN"],
+    _id = _object addaction [
+		"",
         {
 			pr _object = _this select 0;
 			
@@ -154,6 +157,15 @@ if(hasInterface)then{
 						_display closedisplay 2;
 						["jn_fnc_arsenal"] call BIS_fnc_endLoadingScreen;
 					};
+					
+					//TODO this is a temp fix for rhs because it freezes the loading screen if no primaryWeapon was equiped. This will be fix in rhs 0.4.9
+					if("bis_fnc_arsenal" in _ids)then{
+						pr _display =  uiNamespace getVariable ["arsanalDisplay","No display"];
+						diag_log "JNA: Non Fatal Error, RHS?";
+						titleText["Non Fatal Error, RHS?", "PLAIN"];
+						["bis_fnc_arsenal"] call BIS_fnc_endLoadingScreen;
+					};
+
 				};
 
 				//request server to open arsenal
@@ -187,13 +199,14 @@ if(hasInterface)then{
         true,
         false,
         "",
-        "alive _target && {_target distance _this < 5}"
+        "alive _target && {_target distance _this < 5} && {vehicle player == player}"
 			
     ];
+	ACTION_SET_ICON_AND_TEXT(_object, _id, STR_ACTION_TEXT_ARSENAL_CONTAINER, STR_ACTION_ICON_ARSENAL_CONTAINER);
 	
 	//add Action to unload object
-    _object addaction [
-		format ["<img size='1.75' image='\A3\ui_f\data\GUI\Rsc\RscDisplayArsenal\spaceArsenal_ca.paa' />%1",localize "STR_JNA_ACT_UNLOAD"],
+    _id = _object addaction [
+		"",
         {
 			pr _object = _this select 0;
 			
@@ -246,9 +259,10 @@ if(hasInterface)then{
         true,
         false,
         "",
-        "alive _target && {_target distance _this < 5}"
+        "alive _target && {_target distance _this < 5} && {vehicle player == player}"
 			
     ];
+	ACTION_SET_ICON_AND_TEXT(_object, _id, STR_ACTION_TEXT_ARSENAL_UNLOAD, STR_ACTION_ICON_ARSENAL_UNLOAD);
 		
 
     if(missionNamespace getVariable ["jna_first_init",true])then{
