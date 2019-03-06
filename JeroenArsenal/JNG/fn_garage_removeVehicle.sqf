@@ -2,7 +2,7 @@
 if(!isserver)exitWith{};
 
 params ["_name","_index","_object"];
-
+diag_log ["remove vehicle",_name];
 pr _vehicleLists = _object getVariable "jng_vehicleLists";
 pr _vehicleList = (_vehicleLists select _index);
 
