@@ -20,7 +20,8 @@
 params[["_vehicle",objNull,[objNull]],["_repairCargoCapacity",0,[0]],["_repairCargo",0,[0,nil]]];
 
 //check if it already has a action
-if !isnil(_vehicle getVariable "repairAction_id")exitWith{diag_log ("JN_repair already init for object: "+str _vehicle)};
+pr _id = _vehicle getVariable "repairAction_id";
+if (!isnil("_id"))exitWith{diag_log ("JN_repair already init for object: "+str _vehicle)};
 
 pr _id = _vehicle addaction [
 	STR_ACTION_REPAIR(_repairCargo,_repairCargoCapacity),
