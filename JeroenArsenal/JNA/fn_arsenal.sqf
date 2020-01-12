@@ -200,20 +200,25 @@ switch _mode do {
 	case "SaveTFAR": {
 		jna_backpackRadioSettings = nil;
 		
-		private _backpackRadio = player call TFAR_fnc_backpackLr;
-		if (!isNil "_backpackRadio" && {count _backpackRadio >= 2}) then {
-			jna_backpackRadioSettings = _backpackRadio call TFAR_fnc_getLrSettings;
-		};
 		
-	};
+        if(!isNil "TFAR_fnc_backpackLr")then{
+            private _backpackRadio = player call TFAR_fnc_backpackLr;
+
+            if (!isNil "_backpackRadio" && {count _backpackRadio >= 2}) then {
+                jna_backpackRadioSettings = _backpackRadio call TFAR_fnc_getLrSettings;
+            };
+        };
+	}; 
 
 	/////////////////////////////////////////////////////////////////////////////////////////// Restore TFAR radio settings
 
 	case "RestoreTFAR": {
-		private _backpackRadio = player call TFAR_fnc_backpackLr;
-		if (!isNil "_backpackRadio" && {count _backpackRadio >= 2}) then {
-			[_backpackRadio select 0, _backpackRadio select 1, jna_backpackRadioSettings] call TFAR_fnc_setLrSettings;
-		};
+        if(!isNil "TFAR_fnc_backpackLr")then{
+            private _backpackRadio = player call TFAR_fnc_backpackLr;
+            if (!isNil "_backpackRadio" && {count _backpackRadio >= 2}) then {
+                [_backpackRadio select 0, _backpackRadio select 1, jna_backpackRadioSettings] call TFAR_fnc_setLrSettings;
+            };
+        };
 	};
 	
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -1837,9 +1842,9 @@ switch _mode do {
             pr _amount = _data select 1;
 			
 			if (_index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAG || _index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL) then {
-				pr _magSize = configfile >> "CfgMagazines" >> _item >> "count";
+				pr _magSize = (getNumber (configfile >> "CfgMagazines" >> _item >> "count"));
 				if(_magSize > 0)then{
-					_amount = floor(_amount/(getNumber (configfile >> "CfgMagazines" >> _item >> "count")));
+					_amount = floor(_amount/_magSize);
 				};
 			};
 			
@@ -1885,7 +1890,7 @@ switch _mode do {
         _amount = _data select 1;
 		_amount_or_mag_count = _amount;
 		if (_index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAG || _index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL) then {
-			pr _magSize = configfile >> "CfgMagazines" >> _item >> "count";
+			pr _magSize = (getNumber (configfile >> "CfgMagazines" >> _item >> "count"));
 			if(_magSize > 0)then{
 				_amount_or_mag_count = floor(_amount/(getNumber (configfile >> "CfgMagazines" >> _item >> "count")));
 			};
