@@ -1825,22 +1825,30 @@ switch _mode do {
 
 
         //-- Disable too heavy items
-        _min = jna_minItemMember select _index;
-        _rows = lnbsize _ctrlList select 0;
-        _columns = lnbsize _ctrlList select 1;
-        _colorWarning = ["IGUI","WARNING_RGB"] call bis_fnc_displayColorGet;
-        _columns = count lnbGetColumnsPosition _ctrlList;
+        pr _min = jna_minItemMember select _index;
+        pr _rows = lnbsize _ctrlList select 0;
+        pr _columns = lnbsize _ctrlList select 1;
+        pr _colorWarning = ["IGUI","WARNING_RGB"] call bis_fnc_displayColorGet;
+        pr _columns = count lnbGetColumnsPosition _ctrlList;
         for "_r" from 0 to (_rows - 1) do {
-            _dataStr = _ctrlList lnbData [_r,0];
-            _data = parseSimpleArray _dataStr;
-            _amount = _data select 1;
-            _grayout = false;
-            if ((_amount <= _min) AND (_amount != -1) AND (_amount !=0) AND !([player] call isMember)) then{_grayout = true};
+            pr _dataStr = _ctrlList lnbData [_r,0];
+            pr _data = parseSimpleArray _dataStr;
+			pr _item = _data select 0;
+            pr _amount = _data select 1;
+			
+			if (_index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAG || _index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL) then {
+				pr _magSize = configfile >> "CfgMagazines" >> _item >> "count";
+				if(_magSize > 0)then{
+					_amount = floor(_amount/(getNumber (configfile >> "CfgMagazines" >> _item >> "count")));
+				};
+			};
+			
+            pr _grayout = ((_amount <= _min) && (_amount != -1) && (_amount !=0) && !([player] call isMember));
 
-            _isIncompatible = _ctrlList lnbvalue [_r,1];
-            _mass = _ctrlList lbvalue (_r * _columns);
-            _alpha = [1.0,0.25] select (_mass > parseNumber (str _load));
-            _color = [[1,1,1,_alpha],[1,0.5,0,_alpha]] select _isIncompatible;
+            pr _isIncompatible = _ctrlList lnbvalue [_r,1];
+            pr _mass = _ctrlList lbvalue (_r * _columns);
+            pr _alpha = [1.0,0.25] select (_mass > parseNumber (str _load));
+            pr _color = [[1,1,1,_alpha],[1,0.5,0,_alpha]] select _isIncompatible;
             if(_grayout)then{_color = [1,1,0,0.60];};
             _ctrlList lnbsetcolor [[_r,1],_color];
             _ctrlList lnbsetcolor [[_r,2],_color];
@@ -1875,7 +1883,14 @@ switch _mode do {
         _data = parseSimpleArray _dataStr;
         _item = _data select 0;
         _amount = _data select 1;
-
+		_amount_or_mag_count = _amount;
+		if (_index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAG || _index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL) then {
+			pr _magSize = configfile >> "CfgMagazines" >> _item >> "count";
+			if(_magSize > 0)then{
+				_amount_or_mag_count = floor(_amount/(getNumber (configfile >> "CfgMagazines" >> _item >> "count")));
+			};
+		};
+		
         _load = 0;
         _items = [];
         _itemChanged = false;
@@ -1896,7 +1911,7 @@ switch _mode do {
 
             if (_add > 0) then {//add
                 _min = jna_minItemMember select _index;
-                if((_amount <= _min) AND (_amount != -1) AND !([player] call isMember)) exitWith{
+                if((_amount_or_mag_count <= _min) AND (_amount != -1) AND !([player] call isMember)) exitWith{
                     ['showMessage',[_display,"We are low on this item, only members may use it"]] call jn_fnc_arsenal;
                 };
                 if(_index in [IDC_RSCDISPLAYARSENAL_TAB_CARGOMAG,IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL])then{//magazines are handeld by bullet count
@@ -2376,6 +2391,8 @@ switch _mode do {
     /////////////////////////////////////////////////////////////////////////////////////////// event
     case "buttonClose": {
         params["_display"];
+
+		["RestoreTFAR"] call jn_fnc_arsenal;
 
         //remove missing item message
         titleText["", "PLAIN"];
