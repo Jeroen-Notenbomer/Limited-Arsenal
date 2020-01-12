@@ -187,12 +187,35 @@ switch _mode do {
 		params["_jna_dataList"];
         diag_log "JNA open arsenal";
 		
+		["SaveTFAR"] call jn_fnc_arsenal;
+		
 		pr _object = UINamespace getVariable "jn_object";
 		_object setVariable ["jna_dataList",_jna_dataList];
 		
         ["Open",[nil,_object,player,false]] call bis_fnc_arsenal;
     };
+	
+	/////////////////////////////////////////////////////////////////////////////////////////// SaveTFAR function
 
+	case "SaveTFAR": {
+		jna_backpackRadioSettings = nil;
+		
+		private _backpackRadio = player call TFAR_fnc_backpackLr;
+		if (!isNil "_backpackRadio" && {count _backpackRadio >= 2}) then {
+			jna_backpackRadioSettings = _backpackRadio call TFAR_fnc_getLrSettings;
+		};
+		
+	};
+
+	/////////////////////////////////////////////////////////////////////////////////////////// Restore TFAR radio settings
+
+	case "RestoreTFAR": {
+		private _backpackRadio = player call TFAR_fnc_backpackLr;
+		if (!isNil "_backpackRadio" && {count _backpackRadio >= 2}) then {
+			[_backpackRadio select 0, _backpackRadio select 1, jna_backpackRadioSettings] call TFAR_fnc_setLrSettings;
+		};
+	};
+	
     ///////////////////////////////////////////////////////////////////////////////////////////
     case "CustomInit":{
 		diag_log ["CustomInit22",UINamespace getVariable "jn_object"];
