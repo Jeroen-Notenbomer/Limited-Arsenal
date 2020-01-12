@@ -1,7 +1,7 @@
 #include "defineCommon.inc"
 
 fnc_debugv2_overwrite = {
-	waitUntil {!isNull findDisplay 49}; 
+	//waitUntil {!isNull findDisplay 49}; // no please don't waitUntil in unscheduled, by now display 49 already exists
 	_display = findDisplay 49;
 	
 	_ctrl_debug = _display displayCtrl 13184; 
@@ -233,7 +233,7 @@ fnc_debugv2_overwrite = {
 			};
 			
 			_ctrl ctrlSetText _name;
-			_ctrl ctrlAddEventHandler ["ButtonClick", format["%1 call %2",_index,_code]];
+			_ctrl ctrlAddEventHandler ["ButtonClick", format["0 spawn { isNil {%1 call %2}};",_index,_code]];
 			
 			
 			_posX = _posX + _button_width + _spacingY;
@@ -265,18 +265,21 @@ fnc_debugv2_overwrite = {
 };
 
 
+if (hasInterface) then {
+	[] spawn {
 
-[] spawn {
+		waitUntil {!isNull findDisplay 46}; 
 
-	waitUntil {!isNull findDisplay 46}; 
+		(findDisplay 46) displayAddEventHandler ["KeyDown", {
+			params ["_display", "_key", "_shift", "_ctrl", "_alt"];
+			
+			if(_key == 1)then{
+				0 spawn {
+					waitUntil {!isNull (findDisplay 49)};
+					isNil {call fnc_debugv2_overwrite;}; // Wrap it into isNil to make it do the job in one frame
+				};
+			};
+		}];
 
-	(findDisplay 46) displayAddEventHandler ["KeyDown", {
-		params ["_display", "_key", "_shift", "_ctrl", "_alt"];
-		
-		if(_key == 1)then{
-			[] spawn fnc_debugv2_overwrite;
-		};
-	}];
-
+	};
 };
-

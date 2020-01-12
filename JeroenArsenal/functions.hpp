@@ -34,6 +34,7 @@ class JN {
 		class arsenal_cargoToArsenal {};
 		class arsenal_container {};
 		class arsenal_init {};
+		class arsenal_initPersistent {};
 		class arsenal_inList {};
 		class arsenal_itemCount {};
 		class arsenal_itemType {};
@@ -41,6 +42,9 @@ class JN {
 		class arsenal_removeItem {};
 		class arsenal_requestOpen {};
 		class arsenal_requestClose {};
+		class arsenal_getEmptyArray {};
+		class arsenal_getPrimaryWeapons {};
+		class arsenal_getSecondaryWeapons {};
 	};
 	class JNG {
 		file = "JeroenArsenal\JNG";
@@ -58,9 +62,12 @@ class JN {
 		class garage_updatePoints {};
 	};
 	
+	/*
+	// Sorry had to disable that, it seems to desynchronize and nullify fual amounts sometimes
 	class Fuel {
 		file = "JeroenArsenal\Fuel";
-		class fuel_init {preinit = 1;};
+		class fuel_init {postinit = 1;};
+		class fuel_vehicleInit {};
 		class fuel_consumption_init {postInit = 1;};
 		class fuel_consumption_start {};
 		class fuel_consumption_stop {};
@@ -75,6 +82,7 @@ class JN {
 		class fuel_getCargoCapacity {};
 		class fuel_setCargoCapacity {};
 	};
+	*/
 	
 	class Ammo {
 		file = "JeroenArsenal\Ammo";

@@ -20,15 +20,12 @@
 params["_vehicle","_fuelCargoCapacity",["_fuelCargo",0]];
 
 //check if it already has a action
-private _id =  isnil(_vehicle getVariable "refuelAction_id");
-if (isNil "_id")exitWith{diag_log ("JN_fuel already init for object: "+str _vehicle)};
+if (!isnil{ _vehicle getVariable "refuelAction_id" }) exitWith{diag_log ("JN_fuel already init for object: "+str _vehicle)};
 
-
-_id = _vehicle addaction [
+pr _id = _vehicle addaction [
 	"place holder",
 	{
 		pr _vehicle = _this select 0;
-		diag_log ["test1",_vehicle];
 		//check if object has still fuel
 		pr _fuelCargo = _vehicle getVariable ["jn_fuel_cargo",0];
 		if(_fuelCargo == 0)exitWith{hint "No fuel in object"};

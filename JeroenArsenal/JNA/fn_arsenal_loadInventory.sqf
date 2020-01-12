@@ -9,12 +9,8 @@ pr _arrayReplaced = [];
 
 pr  _addToArray = {
 	params ["_array","_index","_item","_amount"];
-	_array = _this select 0;
-	_index = _this select 1;
-	_item = _this select 2;
-	_amount = _this select 3;
 
-	if!(_index == -1 || _item isEqualTo ""||_amount == 0)then{
+	if(_index != -1 && !(_item isEqualTo "") && _amount != 0)then{
 		_array set [_index,[_array select _index,[_item,_amount]] call jn_fnc_common_array_add];
 	};
 };
@@ -22,12 +18,8 @@ pr  _addToArray = {
 
 pr _removeFromArray = {
 	params ["_array","_index","_item","_amount"];
-	_array = _this select 0;
-	_index = _this select 1;
-	_item = _this select 2;
-	_amount = _this select 3;
 
-	if!(_index == -1 || _item isEqualTo ""|| _amount == 0)then{
+	if(_index != -1 && !(_item isEqualTo "") && _amount != 0)then{
 		_array set [_index,[_array select _index,[_item,_amount]] call jn_fnc_common_array_remove];
 	};
 };
@@ -81,14 +73,14 @@ pr _inventory = [];
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// magazines (loaded)
-	//["30Rnd_65x39_caseless_green",30,false,-1,"Uniform"]
+//["30Rnd_65x39_caseless_green",30,false,-1,"Uniform"]
 {
-	pr _loaded = _x select 2;
+	pr _loaded = _x select 2; //we only want need the mags that are loaded in a weapon
 	if(_loaded) then {
 		pr _item = _x select 0;
 		pr _amount = _x select 1;
 		pr _index = _item call jn_fnc_arsenal_itemType;
-		//no need to remove because uniform, vest and backpack get replaced.
+		//We dont need to remove the magazines here because they will be removed with the weapon later.
 		[_arrayPlaced,_index,_item,_amount] call _addToArray;
 	};
 } foreach magazinesAmmoFull player;
@@ -109,18 +101,21 @@ pr _attachments = primaryWeaponItems player + secondaryWeaponItems player + hand
 	pr _item = _x;
 	pr _amount = 1;
 	pr _index = _item call jn_fnc_arsenal_itemType;
+	//We dont need to remove the attachments here because they will be removed with the weapon later.
 	[_arrayPlaced,_index,_item,_amount]call _addToArray;
-} forEach _attachments;
+} forEach _attachments - [""];
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	weapons
 pr _weapons_old = [primaryWeapon player, secondaryWeapon player, handgunWeapon player, binocular player];
 {
 	pr _item = _x;
-	pr _amount = 1;
-	pr _index = _foreachindex;
-	player removeWeapon _item;
-	[_arrayPlaced,_index,_item,_amount]call _addToArray;
-} forEach _weapons_old;
+	if(_item != "")then{
+		pr _amount = 1;
+		pr _index = _foreachindex;
+		player removeWeapon _item;
+		[_arrayPlaced,_index,_item,_amount]call _addToArray;
+	};
+} forEach _weapons_old; // - [""]; we can use the _foreachindex as index number so we dont need jn_fnc_arsenal_itemType
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	uniform backpack vest (inc itmes)
 pr _uniform_old = uniform player;
@@ -130,7 +125,7 @@ pr _backpack_old = backpack player;
 //remove items from containers
 {
 	pr _array = (_x call jn_fnc_arsenal_cargoToArray);
-	//remove because they where already added
+	//We dont need to remove the items here because they will be removed with uniform,vest and backpack later.
 	_arrayPlaced = [_arrayPlaced, _array] call _addArrays;
 } forEach [uniformContainer player, vestContainer player, backpackContainer player];
 
@@ -147,8 +142,10 @@ removeBackpack player;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  ADD
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 pr _availableItems = [_dataList, _arrayPlaced] call _addArrays;
+pr _itemCounts =+ _availableItems;
 
 //TODO add member only stuff
+// Let's not add it maybe? Not sure if we need that.
 /*
 pr _isMember = true;
 {
@@ -177,21 +174,21 @@ pr _assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inventory
 		_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_common_array_add;
 	} else {
 
-		//TFAR fix
-		pr   = getText(configfile >> "CfgWeapons" >> _item >> "tf_parent");
+		//TFAR fix, find base radio
+		pr _radioName = getText(configfile >> "CfgWeapons" >> _item >> "tf_parent");
 		if!(_radioName isEqualTo "")then{
 			_item =_radioName;
 		};
 
-		call {
-			if ([_itemCounts select _index, _item] call jn_fnc_arsenal_itemCount == -1) exitWith {
-				if(_item isEqualTo (_inventory select 5) )then{
-					player addweapon _item;
-				}else{
-					player linkItem _item;
-				};
+		
+		if ([_item, _itemCounts select _index] call jn_fnc_arsenal_itemCount == -1) then {
+			if(_item isEqualTo (_inventory select 5) )then{
+				player addweapon _item;
+			}else{
+				player linkItem _item;
 			};
-			if ([_availableItems select _index, _item] call jn_fnc_arsenal_itemCount > 0) then {
+		} else {
+			if ([_item, _availableItems select _index] call jn_fnc_arsenal_itemCount > 0) then {
 				if(_item isEqualTo (_inventory select 5) )then{
 					player addweapon _item;
 				}else{
@@ -203,12 +200,15 @@ pr _assignedItems = ((_inventory select 9) + [_inventory select 3] + [_inventory
 				_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_common_array_add;
 			};
 		};
+
+
+
 	};
 } forEach _assignedItems - [""];
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// weapons and attachments
 removeBackpack player;
-player addBackpack "B_Carryall_oli"; //add ammo to gun, can only be done by first adding a mag.
+player addBackpack "B_Carryall_oli"; //temp backpack for adding magazines to weapons
 pr _weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
 {//forEach _weapons;
 	pr _item = _x select 0;
@@ -223,11 +223,11 @@ pr _weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
 
 		//add ammo to backpack, which need to be loaded in the gun.
 		call {
-			if ([_itemCounts select _indexMag, _itemMag] call jn_fnc_arsenal_itemCount == -1) exitWith {
+			if ([_itemMag, _itemCounts select _indexMag] call jn_fnc_arsenal_itemCount == -1) exitWith {
 				player addMagazine [_itemMag, _amountMag];
 			};
 
-			pr _amountMagAvailable = [_availableItems select _indexMag, _itemMag] call jn_fnc_arsenal_itemCount;
+			pr _amountMagAvailable = [_itemMag, _availableItems select _indexMag] call jn_fnc_arsenal_itemCount;
 			if (_amountMagAvailable > 0) then {
 				if (_amountMagAvailable < _amountMag) then {
 					_arrayMissing = [_arrayMissing,[_itemMag,_amountMag]] call jn_fnc_common_array_add;
@@ -243,11 +243,11 @@ pr _weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
 
 		//adding the gun
 		call {
-			if ((_index != -1) AND ([_itemCounts select _index, _item] call jn_fnc_arsenal_itemCount == -1)) exitWith {
+			if ((_index != -1) AND ([_item, _itemCounts select _index] call jn_fnc_arsenal_itemCount == -1)) exitWith {
 				player addWeapon _item;
 			};
 
-			if ((_index != -1) AND {[_availableItems select _index, _item] call jn_fnc_arsenal_itemCount > 0}) then {
+			if ((_index != -1) AND {[_item, _availableItems select _index] call jn_fnc_arsenal_itemCount > 0}) then {
 				player addWeapon _item;
 				[_arrayTaken,_index,_item,_amount] call _addToArray;
 				[_availableItems,_index,_item,_amount] call _removeFromArray;
@@ -265,7 +265,7 @@ pr _weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
 
 				call {
 
-					if ((_indexAcc != -1) AND ([_itemCounts select _indexAcc, _itemAcc] call jn_fnc_arsenal_itemCount == -1)) exitWith {
+					if ((_indexAcc != -1) AND ([_itemAcc, _itemCounts select _indexAcc] call jn_fnc_arsenal_itemCount == -1)) exitWith {
 						switch _index do{
 							case IDC_RSCDISPLAYARSENAL_TAB_PRIMARYWEAPON:{player addPrimaryWeaponItem _itemAcc;};
 							case IDC_RSCDISPLAYARSENAL_TAB_SECONDARYWEAPON:{player addSecondaryWeaponItem _itemAcc;};
@@ -273,7 +273,7 @@ pr _weapons = [_inventory select 6,_inventory select 7,_inventory select 8];
 						};
 					};
 
-					if ((_indexAcc != -1) AND {[_availableItems select _indexAcc, _itemAcc] call jn_fnc_arsenal_itemCount != 0}) then {
+					if ((_indexAcc != -1) AND {[_itemAcc, _availableItems select _indexAcc] call jn_fnc_arsenal_itemCount != 0}) then {
 						switch _index do{
 							case IDC_RSCDISPLAYARSENAL_TAB_PRIMARYWEAPON:{player addPrimaryWeaponItem _itemAcc;};
 							case IDC_RSCDISPLAYARSENAL_TAB_SECONDARYWEAPON:{player addSecondaryWeaponItem _itemAcc;};
@@ -318,12 +318,10 @@ pr _invCallArray = [
 			IDC_RSCDISPLAYARSENAL_TAB_BACKPACK
 		] select _foreachindex;
 
-		call {
-			if ([_itemCounts select _index, _item] call jn_fnc_arsenal_itemCount == -1) exitWith {
-				  _item call (_invCallArray select _foreachindex);
-			};
-
-			if ([_availableItems select _index, _item] call jn_fnc_arsenal_itemCount > 0) then {
+		if ([_item, _itemCounts select _index] call jn_fnc_arsenal_itemCount == -1) then {
+				_item call (_invCallArray select _foreachindex);
+		}else{
+			if ([_item, _availableItems select _index] call jn_fnc_arsenal_itemCount > 0) then {
 				_item call (_invCallArray select _foreachindex);
 				[_arrayTaken,_index,_item,_amount] call _addToArray;
 				[_availableItems,_index,_item,_amount] call _removeFromArray;
@@ -354,11 +352,11 @@ pr _invCallArray = [
 			pr _amount = 1; // we will never know the ammo count in the magazines anymore :c
 			_arrayMissing = [_arrayMissing,[_item,_amount]] call jn_fnc_common_array_add;
 		} else {
-			pr _amountAvailable = [_availableItems select _index, _item] call jn_fnc_arsenal_itemCount;
+			pr _amountAvailable = [_item, _availableItems select _index] call jn_fnc_arsenal_itemCount;
 			if (_index == IDC_RSCDISPLAYARSENAL_TAB_CARGOMAGALL) then {
 				pr _amount = getNumber (configfile >> "CfgMagazines" >> _item >> "count");
 				call {
-					if ([_itemCounts select _index, _item] call jn_fnc_arsenal_itemCount == -1) exitWith {
+					if ([_item, _itemCounts select _index] call jn_fnc_arsenal_itemCount == -1) exitWith {
 						_container addMagazineAmmoCargo [_item,1, _amount];
 					};
 
@@ -375,11 +373,11 @@ pr _invCallArray = [
 			} else {
 				pr _amount = 1;
 				call {
-					if ([_itemCounts select _index, _item] call jn_fnc_arsenal_itemCount == -1) exitWith {
+					if ([_item, _itemCounts select _index] call jn_fnc_arsenal_itemCount == -1) exitWith {
 						_container addItemCargo [_item, 1];
 					};
 
-					if (_amountAvailable > _amount) then {
+					if (_amountAvailable >= _amount) then {
 						_container addItemCargo [_item,_amount];
 						[_arrayTaken,_index,_item,_amount] call _addToArray;
 						[_availableItems,_index,_item,_amount] call _removeFromArray;
